@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TAYZEN — Monteur vidéo</title>
+
+<style>
+:root{
+  --bg0:#050816;
+  --bg1:#070b1e;
+
+  --card:rgba(255,255,255,.075);
+  --stroke:rgba(255,255,255,.14);
+
+  --text:#eef2ff;
+  --muted:rgba(238,242,255,.72);
+
+  --accent:#ff7a18;
+  --accent2:#ff3d6a;
+
+  --shadow:0 18px 70px rgba(0,0,0,.55);
+  --radius:22px;
+  --max:1020px;
+
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+body{
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(900px 650px at 15% 10%, rgba(255,122,24,.18), transparent 55%),
+    radial-gradient(900px 650px at 85% 15%, rgba(255,61,106,.14), transparent 55%),
+    radial-gradient(900px 650px at 55% 90%, rgba(255,122,24,.10), transparent 60%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay;
+}
+
+a{ color:inherit; text-decoration:none; }
+.wrap{ width:min(var(--max), calc(100% - 32px)); margin:0 auto; }
+
+header{
+  position:sticky; top:0; z-index:20;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(5,8,22,.62);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+header .wrap{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 0;
+}
+.brand{ display:flex; align-items:center; gap:10px; }
+.brandMark{
+  width:34px; height:34px; border-radius:14px;
+  background: linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,61,106,.85));
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow: 0 18px 50px rgba(255,122,24,.18);
+}
+.brand strong{ letter-spacing:.5px; }
+
+nav{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+nav a{
+  padding:9px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  font-size:13.5px;
+  transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+  transform-origin:center;
+}
+nav a:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.18);
+}
+nav a.clicked{ animation: navClick .28s var(--ease); }
+@keyframes navClick{
+  0%{ transform: translateY(0) scale(1); }
+  40%{ transform: translateY(-1px) scale(1.06); }
+  100%{ transform: translateY(0) scale(1); }
+}
+
+section{ padding:44px 0; }
+h1{
+  margin:0 0 12px;
+  font-size: clamp(30px, 4.4vw, 46px);
+  letter-spacing:-.6px;
+  line-height:1.05;
+}
+h2{ margin:0 0 12px; font-size:22px; letter-spacing:-.2px; }
+h3{ margin:0 0 8px; font-size:16px; }
+p{ margin:0 0 10px; color:var(--muted); line-height:1.55; }
+
+.card{
+  position:relative;
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  overflow:hidden;
+  transition: transform .22s var(--ease), border-color .22s var(--ease), background .22s var(--ease);
+}
+.card::after{
+  content:"";
+  position:absolute; inset:-2px;
+  background: radial-gradient(700px 240px at 20% 10%, rgba(255,122,24,.16), transparent 55%),
+              radial-gradient(700px 240px at 90% 20%, rgba(255,61,106,.12), transparent 55%);
+  opacity:.55;
+  pointer-events:none;
+  mask: linear-gradient(#000, transparent 70%);
+}
+.card:hover{
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.085);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+ul{ padding-left:18px; margin:0; }
+li{ margin-bottom:8px; color:var(--muted); }
+
+.badges{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.badge{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  font-size:13px;
+  color: rgba(238,242,255,.86);
+}
+.badge .dot{
+  width:8px; height:8px; border-radius:99px;
+  background: rgba(255,255,255,.85);
+  box-shadow: 0 0 0 4px rgba(255,255,255,.12);
+}
+
+.hero{
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap:14px;
+  align-items:stretch;
+}
+@media (max-width: 900px){ .hero{ grid-template-columns:1fr; } }
+.hero .card{ padding:22px; }
+.heroRight .mini{
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+  padding:14px;
+  transition: transform .22s var(--ease), border-color .22s var(--ease), background .22s var(--ease);
+}
+.heroRight .mini:hover{
+  transform: translateY(-2px);
+  background: rgba(0,0,0,.22);
+  border-color: rgba(255,255,255,.16);
+}
+.heroRight .mini b{ display:block; font-size:14px; margin-bottom:6px; }
+.heroRight .mini span{ color:var(--muted); font-size:13px; }
+
+.btnRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:12px 14px;
+  border-radius: 16px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  font-weight:700;
+  font-size:14px;
+  cursor:pointer;
+  transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease), box-shadow .18s var(--ease);
+}
+.btn:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.18);
+}
+.btn.primary{
+  background: linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,61,106,.85));
+  border-color: rgba(255,255,255,.18);
+  box-shadow: 0 18px 50px rgba(255,122,24,.16);
+}
+.btn.primary:hover{ box-shadow: 0 22px 70px rgba(255,122,24,.22); }
+
+.cartBtn{
+  position:fixed;
+  top:14px; right:16px;
+  z-index:999;
+  width:46px; height:46px;
+  border-radius:999px;
+  display:flex; align-items:center; justify-content:center;
+  padding:0; line-height:1;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(5,8,22,.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  font-size:18px;
+  cursor:pointer;
+  transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+}
+.cartBtn:hover{
+  transform: translateY(-1px) scale(1.02);
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.22);
+}
+.cartBtn:active{ transform: scale(.98); }
+.cartPulse{
+  position:absolute;
+  width:10px; height:10px;
+  border-radius:999px;
+  right:6px; top:6px;
+  background: linear-gradient(135deg, rgba(255,122,24,.98), rgba(255,61,106,.9));
+  box-shadow: 0 0 0 0 rgba(255,122,24,.25);
+  animation: pulse 1.8s infinite;
+}
+@keyframes pulse{
+  0%{ box-shadow: 0 0 0 0 rgba(255,122,24,.30); }
+  70%{ box-shadow: 0 0 0 10px rgba(255,122,24,0); }
+  100%{ box-shadow: 0 0 0 0 rgba(255,122,24,0); }
+}
+
+.modalOverlay{
+  position:fixed; inset:0;
+  background: rgba(0,0,0,.62);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+  padding:18px;
+}
+.modalOverlay.open{ display:flex; animation: fadeIn .18s var(--ease); }
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+
+.modal{
+  width:min(980px, 100%);
+  max-height:min(88vh, 920px);
+  overflow:auto;
+  background: rgba(8,12,30,.86);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 24px;
+  box-shadow: 0 28px 110px rgba(0,0,0,.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transform: translateY(10px) scale(.985);
+  animation: pop .22s var(--ease) forwards;
+}
+@keyframes pop{ to{ transform: translateY(0) scale(1); } }
+
+.modalHeader{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:20px 20px 12px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.modalHeader h2{ margin:0; font-size:18px; }
+.modalHeader p{ margin:6px 0 0; color:var(--muted); font-size:13.5px; line-height:1.45; }
+
+.closeBtn{
+  width:42px; height:42px;
+  border-radius:999px;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06);
+  cursor:pointer;
+  font-size:18px;
+  line-height:1;
+  transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+}
+.closeBtn:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.22);
+}
+
+.modalBody{ padding:18px 20px 22px; }
+
+/* ✅ Plus aéré */
+.modalGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:18px;
+}
+@media (max-width: 940px){ .modalGrid{ grid-template-columns:1fr; } }
+
+/* ✅ Colonne gauche épurée */
+.panel{
+  padding:16px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+}
+.panel + .panel{ margin-top:14px; }
+.panel h3{ margin:0 0 10px; font-size:15.5px; }
+.panel p{ margin:0; color:var(--muted); font-size:14px; line-height:1.5; }
+.panel ul{ padding-left:18px; margin:0; }
+.panel li{ margin-bottom:8px; font-size:14px; line-height:1.5; }
+
+/* ✅ Formulaire beaucoup plus lisible */
+form{ display:grid; gap:14px; margin-top:12px; }
+.fieldGroup{
+  display:grid;
+  gap:12px;
+  padding:16px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+}
+.fieldGroup h3{
+  margin:0;
+  font-size:14.5px;
+  letter-spacing:-.1px;
+}
+label{
+  font-size:13px;
+  color: rgba(238,242,255,.78);
+}
+input, textarea, select{
+  width:100%;
+  padding:14px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.26);
+  color:var(--text);
+  font-size:15px;
+  outline:none;
+  transition: border-color .18s var(--ease), box-shadow .18s var(--ease), transform .18s var(--ease);
+}
+textarea{ min-height:140px; resize:vertical; }
+input:focus, textarea:focus, select:focus{
+  border-color: rgba(255,122,24,.55);
+  box-shadow: 0 0 0 4px rgba(255,122,24,.14);
+}
+
+.hint{
+  font-size:13px;
+  color: rgba(238,242,255,.64);
+  line-height:1.45;
+}
+
+/* ✅ Estimation mise en avant */
+.estimationBox{
+  padding:14px 16px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+}
+.estimationBox .kicker{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+}
+.estimationBox .kicker b{ font-size:13.5px; }
+.estimationBox .pill{
+  font-size:12.5px;
+  color: rgba(238,242,255,.72);
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+  padding:6px 10px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.estimationBox .estimateValue{
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-.3px;
+  line-height:1.1;
+  margin-bottom:6px;
+}
+.estimationBox .estimateMeta{
+  color: var(--muted);
+  font-size:13.5px;
+  line-height:1.45;
+}
+
+button.primary{
+  padding:13px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.15);
+  background: linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,61,106,.85));
+  color:#fff;
+  font-weight:900;
+  font-size:15px;
+  cursor:pointer;
+  transition: transform .18s var(--ease), box-shadow .18s var(--ease);
+  box-shadow: 0 18px 50px rgba(255,122,24,.16);
+}
+button.primary:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 22px 70px rgba(255,122,24,.22);
+}
+button.primary:active{ transform: translateY(0) scale(.99); }
+
+footer{
+  padding:32px 0 40px;
+  text-align:center;
+  font-size:13px;
+  color: rgba(238,242,255,.55);
+}
+
+.reveal{
+  opacity:0;
+  transform: translateY(10px);
+  transition: opacity .45s var(--ease), transform .45s var(--ease);
+}
+.reveal.show{ opacity:1; transform: translateY(0); }
+
+/* EXTRATS */
+.videoGrid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 18px;
+}
+@media (max-width: 520px){
+  .videoGrid{ grid-template-columns: 1fr; }
+}
+.videoCard{ padding:14px; }
+.videoThumb{
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.10);
+  background:#000;
+}
+.videoThumb .yt{
+  width:100%;
+  aspect-ratio: 16 / 9;
+  border:0;
+  display:block;
+  background:#000;
+  pointer-events:none;
+  user-select:none;
+}
+.videoMeta{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:10px;
+}
+.videoMeta .title{
+  margin:0;
+  font-weight:800;
+  letter-spacing:-.2px;
+}
+.videoMeta .tag{
+  font-size:12.5px;
+  color: rgba(238,242,255,.62);
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  padding:6px 10px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+
+/* Tarifs: +40 min en avant */
+.tarifFeatured{
+  padding:22px;
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.09);
+}
+.tarifFeatured h3{ font-size:18px; }
+.tarifFeatured p strong{ font-size:18px; }
+.tarifFeatured:hover{ transform: translateY(-3px); }
+@media (min-width: 780px){
+  .tarifFeatured{ grid-column: span 2; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *{ animation:none !important; transition:none !important; }
+}
+</style>
+</head>
+
+<body>
+
+<button class="cartBtn" id="openOrder" title="Passer commande" aria-label="Passer commande">
+  🛒
+  <span class="cartPulse" aria-hidden="true"></span>
+</button>
+
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div class="brandMark" aria-hidden="true"></div>
+      <strong>TAYZEN</strong>
+    </div>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#tarifs">Tarifs</a>
+      <a href="#options">Options</a>
+      <a href="#livraison">Livraison</a>
+      <a href="#extraits">Extraits</a>
+      <a href="#avis">Avis</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="reveal">
+  <div class="hero">
+    <div class="card">
+      <h1>Monteur vidéo — vidéos YouTube longues</h1>
+      <p>Je monte des vidéos YouTube longues, tous types de contenus. Pas de shorts.</p>
+
+      <div class="badges">
+        <span class="badge"><span class="dot"></span>Vidéos longues</span>
+        <span class="badge"><span class="dot"></span>Jusqu’à 40 min</span>
+        <span class="badge"><span class="dot"></span>Sound design inclus</span>
+        <span class="badge"><span class="dot"></span>1 révision incluse</span>
+      </div>
+
+      <div class="btnRow">
+        <button class="btn primary" id="openOrder2" type="button">Passer commande</button>
+        <a class="btn" href="#tarifs">Voir les tarifs</a>
+      </div>
+    </div>
+
+    <div class="card heroRight">
+      <div class="mini" style="margin-bottom:12px;">
+        <b>Paiement</b>
+        <span>PayPal • 100% avant livraison</span>
+      </div>
+      <div class="mini" style="margin-bottom:12px;">
+        <b>Délais</b>
+        <span>3–7 jours (courts) • 7–11 jours (30–40 min)</span>
+      </div>
+      <div class="mini">
+        <b>Disponibilité</b>
+        <span>Pas prévue</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="reveal">
+  <h2>Services</h2>
+  <div class="card">
+    <ul>
+      <li>Montage vidéos YouTube longues</li>
+      <li>Tous types de contenus</li>
+      <li>Cuts propres et rythme fluide</li>
+      <li>Sound design inclus</li>
+      <li>Durée max standard : 40 minutes</li>
+    </ul>
+    <p style="margin-top:10px;"><strong>Non proposé :</strong> shorts, TikTok, Reels.</p>
+  </div>
+</section>
+
+<section id="tarifs" class="reveal">
+  <h2>Tarifs</h2>
+  <div class="grid">
+    <div class="card"><h3>8–12 min</h3><p><strong>20–35 €</strong></p></div>
+    <div class="card"><h3>12–20 min</h3><p><strong>40–60 €</strong></p></div>
+    <div class="card"><h3>20–30 min</h3><p><strong>70–100 €</strong></p></div>
+    <div class="card"><h3>40 min</h3><p><strong>110–150 €</strong></p></div>
+
+    <div class="card tarifFeatured">
+      <h3>+40 min (demande spéciale)</h3>
+      <p><strong>150 € +</strong></p>
+      <p class="hint" style="margin-top:6px;">Selon le projet (à voir par email).</p>
+    </div>
+  </div>
+  <p style="margin-top:10px">1 révision incluse • Paiement avant livraison (PayPal uniquement) • Shorts non proposés</p>
+</section>
+
+<section id="options" class="reveal">
+  <h2>Options</h2>
+  <div class="card">
+    <p><strong>Par défaut :</strong> 1 révision incluse.</p>
+    <p><strong>Révisions supplémentaires :</strong> +7 € par révision (max +5).</p>
+    <ul>
+      <li>+2 révisions : <strong>+14 €</strong></li>
+      <li>+3 révisions : <strong>+21 €</strong></li>
+      <li>+4 révisions : <strong>+28 €</strong></li>
+      <li>+5 révisions : <strong>+35 €</strong></li>
+    </ul>
+  </div>
+</section>
+
+<section id="livraison" class="reveal">
+  <h2>Livraison</h2>
+  <div class="card">
+    <p>La vidéo finale est livrée sous format <strong>MP4 (H.264)</strong> via <strong>Frame.io</strong>.</p>
+  </div>
+</section>
+
+<section id="extraits" class="reveal">
+  <h2>Extraits</h2>
+  <p>Quelques exemples. Lecture automatique en boucle (non cliquable).</p>
+
+  <div class="videoGrid" style="margin-top:14px;">
+
+    <article class="card videoCard">
+      <div class="videoThumb">
+        <iframe class="yt"
+          src="https://www.youtube-nocookie.com/embed/QYdn7YG_sNc?autoplay=1&mute=1&loop=1&playlist=QYdn7YG_sNc&controls=0&modestbranding=1&rel=0&playsinline=1"
+          title="YouTube 1" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      </div>
+      <div class="videoMeta">
+        <div>
+          <p class="title">Storytelling</p>
+          <p style="margin:6px 0 0;">Rythme + sound design.</p>
+        </div>
+        <span class="tag">Extrait</span>
+      </div>
+    </article>
+
+    <article class="card videoCard">
+      <div class="videoThumb">
+        <iframe class="yt"
+          src="https://www.youtube-nocookie.com/embed/qzT0wb8Siag?autoplay=1&mute=1&loop=1&playlist=qzT0wb8Siag&controls=0&modestbranding=1&rel=0&playsinline=1"
+          title="YouTube 2" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      </div>
+      <div class="videoMeta">
+        <div>
+          <p class="title">Extrait 2</p>
+          <p style="margin:6px 0 0;">Cuts + rythme.</p>
+        </div>
+        <span class="tag">Extrait</span>
+      </div>
+    </article>
+
+    <article class="card videoCard">
+      <div class="videoThumb">
+        <iframe class="yt"
+          src="https://www.youtube-nocookie.com/embed/6dcsRyq3aJM?autoplay=1&mute=1&loop=1&playlist=6dcsRyq3aJM&controls=0&modestbranding=1&rel=0&playsinline=1"
+          title="YouTube 3" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      </div>
+      <div class="videoMeta">
+        <div>
+          <p class="title">FAQ</p>
+          <p style="margin:6px 0 0;">Montage voix / rythme.</p>
+        </div>
+        <span class="tag">Extrait</span>
+      </div>
+    </article>
+
+    <article class="card videoCard">
+      <div class="videoThumb">
+        <iframe class="yt"
+          src="https://www.youtube-nocookie.com/embed/Vu7KvzEpc9k?autoplay=1&mute=1&loop=1&playlist=Vu7KvzEpc9k&controls=0&modestbranding=1&rel=0&playsinline=1"
+          title="YouTube 4" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      </div>
+      <div class="videoMeta">
+        <div>
+          <p class="title">Gameplay</p>
+          <p style="margin:6px 0 0;">Cuts + sound design.</p>
+        </div>
+        <span class="tag">Extrait</span>
+      </div>
+    </article>
+
+    <article class="card videoCard">
+      <div class="videoThumb">
+        <iframe class="yt"
+          src="https://www.youtube-nocookie.com/embed/iiuwLjKaXeg?autoplay=1&mute=1&loop=1&playlist=iiuwLjKaXeg&controls=0&modestbranding=1&rel=0&playsinline=1"
+          title="YouTube 5" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      </div>
+      <div class="videoMeta">
+        <div>
+          <p class="title">Montage dynamique</p>
+          <p style="margin:6px 0 0;">Rythme + transitions.</p>
+        </div>
+        <span class="tag">Extrait</span>
+      </div>
+    </article>
+
+    <article class="card videoCard">
+      <div class="videoThumb">
+        <iframe class="yt"
+          src="https://www.youtube-nocookie.com/embed/EV6yBMUxtYM?autoplay=1&mute=1&loop=1&playlist=EV6yBMUxtYM&controls=0&modestbranding=1&rel=0&playsinline=1"
+          title="YouTube 6" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      </div>
+      <div class="videoMeta">
+        <div>
+          <p class="title">Extrait 6</p>
+          <p style="margin:6px 0 0;">Sound design + cuts.</p>
+        </div>
+        <span class="tag">Extrait</span>
+      </div>
+    </article>
+
+    <article class="card videoCard">
+      <div class="videoThumb">
+        <iframe class="yt"
+          src="https://www.youtube-nocookie.com/embed/AiynEaCgQKM?autoplay=1&mute=1&loop=1&playlist=AiynEaCgQKM&controls=0&modestbranding=1&rel=0&playsinline=1"
+          title="YouTube 7" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      </div>
+      <div class="videoMeta">
+        <div>
+          <p class="title">Extrait 7</p>
+          <p style="margin:6px 0 0;">Montage fluide + cuts propres.</p>
+        </div>
+        <span class="tag">Extrait</span>
+      </div>
+    </article>
+
+    <article class="card videoCard">
+      <div class="videoThumb">
+        <iframe class="yt"
+          src="https://www.youtube-nocookie.com/embed/qMZlE943bhk?autoplay=1&mute=1&loop=1&playlist=qMZlE943bhk&controls=0&modestbranding=1&rel=0&playsinline=1"
+          title="YouTube 8" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      </div>
+      <div class="videoMeta">
+        <div>
+          <p class="title">Extrait 8</p>
+          <p style="margin:6px 0 0;">Montage fluide.</p>
+        </div>
+        <span class="tag">Extrait</span>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section id="avis" class="reveal">
+  <h2>Avis</h2>
+  <div class="card">
+    <p>Vous donnez votre avis via un <strong>lien</strong> qui est donné à la fin de la commande.</p>
+    <p style="margin:0;">Les avis seront ajoutés ici au fur et à mesure.</p>
+  </div>
+</section>
+
+<section id="faq" class="reveal">
+  <h2>FAQ</h2>
+  <div class="card">
+    <p><strong>Shorts ?</strong><br>Non.</p>
+    <p><strong>Durée maximale ?</strong><br>Jusqu’à 40 minutes (au-delà : demande spéciale).</p>
+    <p><strong>Révisions ?</strong><br>1 incluse. Révisions supplémentaires : +7 € / révision (max +5).</p>
+    <p><strong>Comment je fais mes retours ?</strong><br>Via Frame.io (commentaires au timecode).</p>
+    <p><strong>Délais ?</strong><br>3–7 jours (projets courts) • 7–11 jours (30–40 min).</p>
+    <p><strong>Paiement ?</strong><br>PayPal uniquement (100 % avant livraison).</p>
+    <p><strong>Retard ?</strong><br>Remboursement partiel.</p>
+    <p><strong>Miniatures ?</strong><br>Non.</p>
+  </div>
+</section>
+
+<section id="contact" class="reveal">
+  <h2>Contact</h2>
+  <div class="card">
+    <p>Email : <strong>tayzenprofr@gmail.com</strong></p>
+    <p>Disponibilité : <em>Pas prévue</em></p>
+    <p>Langue : FR • EN (coming soon)</p>
+  </div>
+</section>
+
+</main>
+
+<footer>© <span id="year"></span> — TAYZEN</footer>
+
+<div class="modalOverlay" id="orderModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+    <div class="modalHeader">
+      <div>
+        <h2 id="orderTitle">Passer commande</h2>
+        <p>Tout se fait par email. Les rushs se partagent via Google Drive ou WeTransfer.</p>
+      </div>
+      <button class="closeBtn" id="closeOrder" aria-label="Fermer">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <div class="modalGrid">
+
+        <div>
+          <div class="panel">
+            <h3>À fournir</h3>
+            <ul>
+              <li>Type de vidéo</li>
+              <li>Durée finale attendue</li>
+              <li>Style + références (si tu as)</li>
+              <li>Lien Drive / WeTransfer des rushs</li>
+            </ul>
+          </div>
+
+          <div class="panel">
+            <h3>Révisions (Frame.io)</h3>
+            <ul>
+              <li>Retours via <strong>Frame.io</strong> (timecode).</li>
+              <li><strong>1 commentaire = 1 modification</strong>.</li>
+              <li>1 révision incluse, options jusqu’à <strong>+5</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="panel">
+            <h3>Livraison</h3>
+            <p>Vidéo finale livrée en <strong>MP4 (H.264)</strong> via <strong>Frame.io</strong>.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="margin:0;">
+            <h3>Formulaire de demande</h3>
+
+            <form id="orderForm" action="https://formspree.io/f/mbdrgyqp" method="POST">
+
+              <div class="fieldGroup">
+                <h3>Infos</h3>
+
+                <div>
+                  <label for="pseudo">Pseudo</label>
+                  <input id="pseudo" type="text" name="pseudo" placeholder="Pseudo" required>
+                </div>
+
+                <div>
+                  <label for="email">Adresse email</label>
+                  <input id="email" type="email" name="email" placeholder="Adresse email" required>
+                </div>
+
+                <div>
+                  <label for="paypal">Ton PayPal</label>
+                  <input id="paypal" type="text" name="paypal" placeholder="Email PayPal ou lien PayPal.me" required>
+                </div>
+              </div>
+
+              <div class="fieldGroup">
+                <h3>Projet</h3>
+
+                <div>
+                  <label for="videoType">Type de vidéo</label>
+                  <input id="videoType" type="text" name="type_video" placeholder="Ex: storytelling, gaming, commentary..." required>
+                </div>
+
+                <div>
+                  <label for="finalDuration">Durée finale attendue</label>
+                  <select id="finalDuration" name="duree_finale" required>
+                    <option value="" selected disabled>Choisis une durée</option>
+                    <option value="8-12">8–12 min</option>
+                    <option value="12-20">12–20 min</option>
+                    <option value="20-30">20–30 min</option>
+                    <option value="40">40 min</option>
+                    <option value="40+">+40 min (demande spéciale)</option>
+                  </select>
+                  <div class="hint" style="margin-top:8px;">
+                    C’est la durée finale que tu veux sur YouTube.
+                  </div>
+                </div>
+
+                <div>
+                  <label for="rushLink">Lien des rushs</label>
+                  <input id="rushLink" type="url" name="lien_rushs" placeholder="Lien Google Drive / WeTransfer" required>
+                </div>
+
+                <div>
+                  <label for="message">Détails</label>
+                  <textarea id="message" name="message" placeholder="Décris ton projet (style, refs, consignes...)" required></textarea>
+                </div>
+              </div>
+
+              <div class="fieldGroup">
+                <h3>Options</h3>
+
+                <div>
+                  <label for="extraRevisions">Révisions supplémentaires (max +5)</label>
+                  <select id="extraRevisions" name="extra_revisions">
+                    <option value="0" selected>0 (+0 €)</option>
+                    <option value="1">1 (+7 €)</option>
+                    <option value="2">2 (+14 €)</option>
+                    <option value="3">3 (+21 €)</option>
+                    <option value="4">4 (+28 €)</option>
+                    <option value="5">5 (+35 €)</option>
+                  </select>
+                  <div class="hint" style="margin-top:8px;">Par défaut : 1 révision incluse.</div>
+                </div>
+
+                <div class="estimationBox" id="priceEstimate">
+                  <div class="kicker">
+                    <b>Estimation</b>
+                    <span class="pill">indicatif</span>
+                  </div>
+                  <div class="estimateValue">—</div>
+                  <div class="estimateMeta">Choisis une durée pour afficher une estimation.</div>
+                </div>
+
+                <div class="hint" id="revSummary">
+                  Total révisions : <strong>1</strong> (1 incluse + 0 en option) • Option : <strong>+0 €</strong>
+                </div>
+
+                <div class="hint">
+                  <strong>Important :</strong> 1 commentaire = 1 modification.
+                </div>
+
+                <div class="hint">
+                  Le prix final est confirmé par email (pour éviter les quiproquos).
+                </div>
+              </div>
+
+              <input type="hidden" name="source" value="Portfolio TAYZEN">
+              <button class="primary" type="submit">Envoyer la demande</button>
+            </form>
+
+            <div id="orderSuccess" style="display:none; margin-top:14px;">
+              <div class="card" style="margin:0;">
+                <h3>Demande envoyée ✅</h3>
+                <p style="margin:0;">
+                  Merci. Je te répondrai par email afin de valider le projet et procéder au paiement (PayPal uniquement).
+                  <br>Je te répondrai dans les plus brefs délais quand je suis disponible.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Nav click animation
+  document.querySelectorAll("nav a").forEach(a=>{
+    a.addEventListener("click", ()=>{
+      a.classList.remove("clicked");
+      void a.offsetWidth;
+      a.classList.add("clicked");
+      setTimeout(()=>a.classList.remove("clicked"), 320);
+    });
+  });
+
+  // Modal
+  const openBtn = document.getElementById("openOrder");
+  const openBtn2 = document.getElementById("openOrder2");
+  const modal = document.getElementById("orderModal");
+  const closeBtn = document.getElementById("closeOrder");
+
+  let lastOpener = openBtn;
+
+  function openModal(fromBtn){
+    lastOpener = fromBtn || openBtn;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => {
+      const first = modal.querySelector("input, textarea, select, button");
+      if(first) first.focus();
+    });
+  }
+  function closeModal(){
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+    if(lastOpener) lastOpener.focus();
+  }
+
+  openBtn.addEventListener("click", () => openModal(openBtn));
+  openBtn2.addEventListener("click", () => openModal(openBtn2));
+  closeBtn.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+  window.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && modal.classList.contains("open")) closeModal(); });
+
+  // Estimation + révisions
+  const extraRevisions = document.getElementById("extraRevisions");
+  const revSummary = document.getElementById("revSummary");
+  const finalDuration = document.getElementById("finalDuration");
+  const priceEstimate = document.getElementById("priceEstimate");
+
+  const durationBands = {
+    "8-12": { min: 20, max: 35, label: "8–12 min" },
+    "12-20": { min: 40, max: 60, label: "12–20 min" },
+    "20-30": { min: 70, max: 100, label: "20–30 min" },
+    "40":    { min: 110, max: 150, label: "40 min" },
+    "40+":   { min: 150, max: null, label: "+40 min (demande spéciale)" }
+  };
+
+  function updateRev(){
+    const extra = parseInt(extraRevisions.value, 10) || 0;
+    const cost = extra * 7;
+    const total = 1 + extra;
+    revSummary.innerHTML = `Total révisions : <strong>${total}</strong> (1 incluse + ${extra} en option) • Option : <strong>+${cost} €</strong>`;
+  }
+
+  function setEstimate(valueText, metaText){
+    priceEstimate.querySelector(".estimateValue").textContent = valueText;
+    priceEstimate.querySelector(".estimateMeta").textContent = metaText;
+  }
+
+  function updateEstimate(){
+    const extra = parseInt(extraRevisions.value, 10) || 0;
+    const extraCost = extra * 7;
+    const key = finalDuration.value;
+
+    if(!key || !durationBands[key]){
+      setEstimate("—", "Choisis une durée pour afficher une estimation.");
+      return;
+    }
+
+    const band = durationBands[key];
+
+    if(band.max === null){
+      const minTotal = band.min + extraCost;
+      setEstimate(`${minTotal} €+`, `${band.label} • options incluses • estimation (indicatif)`);
+      return;
+    }
+
+    const minTotal = band.min + extraCost;
+    const maxTotal = band.max + extraCost;
+    setEstimate(`${minTotal}–${maxTotal} €`, `${band.label} • options incluses • estimation (indicatif)`);
+  }
+
+  function updateAll(){
+    updateRev();
+    updateEstimate();
+  }
+
+  extraRevisions.addEventListener("change", updateAll);
+  finalDuration.addEventListener("change", updateAll);
+  updateAll();
+
+  // Formspree submit (AJAX)
+  const orderForm = document.getElementById("orderForm");
+  const orderSuccess = document.getElementById("orderSuccess");
+
+  orderForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const btn = orderForm.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.textContent = "Envoi…";
+    btn.disabled = true;
+
+    try {
+      const formData = new FormData(orderForm);
+      const response = await fetch(orderForm.action, {
+        method: "POST",
+        body: formData,
+        headers: { "Accept": "application/json" }
+      });
+
+      if (response.ok) {
+        orderForm.reset();
+        updateAll();
+        orderSuccess.style.display = "block";
+      } else {
+        alert("Erreur lors de l’envoi. Réessaie ou contacte-moi par email.");
+      }
+    } catch (error) {
+      alert("Erreur réseau. Réessaie plus tard.");
+    } finally {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  });
+
+  // Reveal on scroll
+  const items = document.querySelectorAll(".reveal");
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting) e.target.classList.add("show");
+    });
+  }, { threshold: 0.15 });
+  items.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
