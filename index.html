@@ -61,7 +61,9 @@ header{
 header .wrap{
   display:flex; align-items:center; justify-content:space-between;
   padding:12px 0;
+  gap:10px;
 }
+
 .brand{ display:flex; align-items:center; gap:10px; }
 .brandMark{
   width:34px; height:34px; border-radius:14px;
@@ -71,6 +73,7 @@ header .wrap{
 }
 .brand strong{ letter-spacing:.5px; }
 
+/* NAV desktop */
 nav{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
 nav a{
   padding:9px 12px;
@@ -91,6 +94,43 @@ nav a.clicked{ animation: navClick .28s var(--ease); }
   0%{ transform: translateY(0) scale(1); }
   40%{ transform: translateY(-1px) scale(1.06); }
   100%{ transform: translateY(0) scale(1); }
+}
+
+/* ✅ NAV mobile : 1 ligne scrollable + boutons plus gros */
+@media (max-width: 680px){
+  header .wrap{
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 0;
+  }
+
+  .brand{
+    justify-content: center;
+  }
+
+  nav{
+    justify-content:flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 4px;
+    gap: 10px;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar{ display:none; }
+
+  nav a{
+    flex: 0 0 auto;
+    padding: 12px 14px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 380px){
+  nav a{
+    padding: 11px 12px;
+    font-size: 13.5px;
+  }
 }
 
 section{ padding:44px 0; }
@@ -297,7 +337,6 @@ li{ margin-bottom:8px; color:var(--muted); }
 
 .modalBody{ padding:18px 20px 22px; }
 
-/* ✅ Plus aéré */
 .modalGrid{
   display:grid;
   grid-template-columns: 1fr 1fr;
@@ -305,7 +344,6 @@ li{ margin-bottom:8px; color:var(--muted); }
 }
 @media (max-width: 940px){ .modalGrid{ grid-template-columns:1fr; } }
 
-/* ✅ Colonne gauche épurée */
 .panel{
   padding:16px;
   border-radius:18px;
@@ -318,7 +356,6 @@ li{ margin-bottom:8px; color:var(--muted); }
 .panel ul{ padding-left:18px; margin:0; }
 .panel li{ margin-bottom:8px; font-size:14px; line-height:1.5; }
 
-/* ✅ Formulaire beaucoup plus lisible */
 form{ display:grid; gap:14px; margin-top:12px; }
 .fieldGroup{
   display:grid;
@@ -360,7 +397,6 @@ input:focus, textarea:focus, select:focus{
   line-height:1.45;
 }
 
-/* ✅ Estimation mise en avant */
 .estimationBox{
   padding:14px 16px;
   border-radius:16px;
@@ -731,7 +767,7 @@ footer{
       <div class="videoMeta">
         <div>
           <p class="title">Extrait 7</p>
-          <p style="margin:6px 0 0;">Montage fluide + cuts propres.</p>
+          <p style="margin:6px 0 0;">Montage fluide + cuts propres + 3d.</p>
         </div>
         <span class="tag">Extrait</span>
       </div>
@@ -885,7 +921,12 @@ footer{
                 </div>
 
                 <div>
-                  <label for="message">Détails</label>
+                  <label for="youtubeChannel">Envoie ta chaîne YouTube</label>
+                  <input id="youtubeChannel" type="url" name="chaine_youtube" placeholder="Lien de ta chaîne YouTube (optionnel)">
+                </div>
+
+                <div>
+                  <label for="message">Précision</label>
                   <textarea id="message" name="message" placeholder="Décris ton projet (style, refs, consignes...)" required></textarea>
                 </div>
               </div>
@@ -924,11 +965,14 @@ footer{
                 </div>
 
                 <div class="hint">
+                  Le tarif affiché ci-dessus est une <strong>estimation</strong> (indicative) et sera aussi envoyé dans l’email pour que tu restes dans la tranche.
                   Le prix final est confirmé par email (pour éviter les quiproquos).
                 </div>
               </div>
 
               <input type="hidden" name="source" value="Portfolio TAYZEN">
+              <input type="hidden" name="tarif_estime" id="tarif_estime" value="">
+
               <button class="primary" type="submit">Envoyer la demande</button>
             </form>
 
@@ -1000,6 +1044,7 @@ footer{
   const revSummary = document.getElementById("revSummary");
   const finalDuration = document.getElementById("finalDuration");
   const priceEstimate = document.getElementById("priceEstimate");
+  const tarifEstimeInput = document.getElementById("tarif_estime");
 
   const durationBands = {
     "8-12": { min: 20, max: 35, label: "8–12 min" },
@@ -1019,6 +1064,7 @@ footer{
   function setEstimate(valueText, metaText){
     priceEstimate.querySelector(".estimateValue").textContent = valueText;
     priceEstimate.querySelector(".estimateMeta").textContent = metaText;
+    if(tarifEstimeInput) tarifEstimeInput.value = valueText === "—" ? "" : valueText;
   }
 
   function updateEstimate(){
