@@ -99,6 +99,19 @@ body::before{
 a{ color:inherit; text-decoration:none; }
 .wrap{ width:min(var(--max), calc(100% - 32px)); margin:0 auto; }
 
+/* ---------- BARRE DE PROGRESSION DE SCROLL ---------- */
+.scrollProgress{
+  position:fixed; top:0; left:0; right:0;
+  height:3px; z-index:1000;
+  pointer-events:none;
+}
+.scrollProgress span{
+  display:block; height:100%; width:0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  box-shadow: 0 0 12px rgba(255,30,60,.6);
+  border-radius:0 99px 99px 0;
+}
+
 /* ---------- LIQUID GLASS : recette commune ---------- */
 .glass{
   position:relative;
@@ -208,7 +221,7 @@ header .wrap{
 }
 .brand strong{ font-family:var(--font-display); letter-spacing:1.5px; font-size:16px; }
 
-nav{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+nav{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; flex:1; min-width:0; }
 nav a{
   padding:9px 13px;
   border-radius:999px;
@@ -216,7 +229,7 @@ nav a{
   background: rgba(255,255,255,.045);
   backdrop-filter: blur(8px);
   font-size:13.5px;
-  transition: transform .22s var(--spring), background .22s var(--ease), border-color .22s var(--ease), box-shadow .22s var(--ease);
+  transition: transform .22s var(--spring), background .22s var(--ease), border-color .22s var(--ease), box-shadow .22s var(--ease), color .22s var(--ease);
 }
 nav a:hover{
   transform: translateY(-2px);
@@ -224,13 +237,32 @@ nav a:hover{
   border-color: rgba(255,255,255,.22);
   box-shadow: 0 8px 24px rgba(255,30,60,.14), inset 0 1px 0 rgba(255,255,255,.25);
 }
+/* Lien de la section en cours de lecture */
+nav a.active{
+  color:#fff;
+  background: linear-gradient(135deg, rgba(255,30,60,.35), rgba(255,92,122,.22));
+  border-color: rgba(255,92,122,.5);
+  box-shadow: 0 8px 24px rgba(255,30,60,.22), inset 0 1px 0 rgba(255,255,255,.28);
+}
 
-@media (max-width: 680px){
-  header .wrap{ flex-direction: column; align-items: stretch; padding: 10px 0; }
-  .brand{ justify-content:center; }
-  nav{ justify-content:flex-start; flex-wrap: nowrap; overflow-x: auto; padding: 8px 4px; gap: 10px; scrollbar-width: none; }
+@media (max-width: 860px){
+  header .wrap{
+    display:grid;
+    grid-template-columns: 1fr auto;
+    align-items:center;
+    gap:6px;
+    padding:10px 0;
+  }
+  .brand{ grid-column:1; grid-row:1; justify-content:flex-start; }
+  .headerCta{ grid-column:2; grid-row:1; height:42px; padding:0 16px; font-size:13.5px; }
+  nav{
+    grid-column:1 / -1; grid-row:2;
+    justify-content:flex-start; flex-wrap:nowrap;
+    overflow-x:auto; padding:8px 2px; gap:8px;
+    scrollbar-width:none;
+  }
   nav::-webkit-scrollbar{ display:none; }
-  nav a{ flex: 0 0 auto; padding: 12px 14px; font-size: 14px; white-space: nowrap; }
+  nav a{ flex:0 0 auto; padding:11px 14px; font-size:14px; white-space:nowrap; }
 }
 
 /* ---------- TYPO & SECTIONS ---------- */
@@ -289,7 +321,7 @@ li{ margin-bottom:8px; color:var(--muted); }
 }
 
 /* ---------- HERO ---------- */
-.hero{ display:grid; grid-template-columns: 1.2fr .8fr; gap:16px; align-items:stretch; }
+.hero{ display:grid; grid-template-columns: 1fr 1.05fr; gap:16px; align-items:stretch; }
 @media (max-width: 900px){ .hero{ grid-template-columns:1fr; } }
 .hero .card{ padding:28px; }
 .heroBlob{
@@ -304,7 +336,43 @@ li{ margin-bottom:8px; color:var(--muted); }
 }
 @keyframes spinSlow{ to{ transform: rotate(360deg); } }
 
-.heroRight .mini{
+/* Vidéo de présentation (cliquable) */
+.heroVideoCard{
+  display:flex; flex-direction:column;
+  padding:14px !important;
+}
+.heroVideoThumb{
+  position:relative;
+  border-radius:18px; overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+  background:#000;
+  aspect-ratio:16/9;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 14px 40px rgba(0,0,0,.4);
+  flex:1;
+}
+.heroVideoThumb iframe{
+  position:absolute; inset:0;
+  width:100%; height:100%; border:0; display:block;
+}
+.heroVideoMeta{
+  display:flex; align-items:center; gap:10px;
+  margin-top:12px;
+}
+.heroVideoMeta .playDot{
+  width:34px; height:34px; flex:0 0 34px;
+  border-radius:999px;
+  display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 8px 24px rgba(255,30,60,.35), inset 0 1px 0 rgba(255,255,255,.4);
+  font-size:12px; color:#fff;
+}
+.heroVideoMeta b{ display:block; font-size:14px; }
+.heroVideoMeta span{ display:block; color:var(--muted); font-size:12.5px; }
+
+/* Rangée d'infos sous le hero */
+.infoRow{ display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; margin-top:16px; }
+@media (max-width: 760px){ .infoRow{ grid-template-columns:1fr; } }
+.infoRow .mini{
   border-radius:18px;
   border:1px solid rgba(255,255,255,.11);
   background: rgba(0,0,0,.20);
@@ -313,9 +381,9 @@ li{ margin-bottom:8px; color:var(--muted); }
   padding:16px;
   transition: transform .25s var(--spring), border-color .25s var(--ease), background .25s var(--ease);
 }
-.heroRight .mini:hover{ transform: translateY(-3px) scale(1.01); background: rgba(0,0,0,.26); border-color: rgba(255,255,255,.18); }
-.heroRight .mini b{ display:block; font-size:14px; margin-bottom:6px; }
-.heroRight .mini span{ color:var(--muted); font-size:13px; }
+.infoRow .mini:hover{ transform: translateY(-3px) scale(1.01); background: rgba(0,0,0,.26); border-color: rgba(255,255,255,.18); }
+.infoRow .mini b{ display:block; font-size:14px; margin-bottom:6px; }
+.infoRow .mini span{ color:var(--muted); font-size:13px; }
 
 .availability{
   display:inline-flex; align-items:center; gap:8px;
@@ -370,32 +438,189 @@ li{ margin-bottom:8px; color:var(--muted); }
 @keyframes rip{ to{ transform: scale(4); opacity:0; } }
 
 /* ---------- BOUTON FLOTTANT ---------- */
-.cartBtn{
-  position:fixed; top:14px; right:16px; z-index:999;
-  width:48px; height:48px; border-radius:999px;
-  display:flex; align-items:center; justify-content:center;
-  padding:0; line-height:1;
-  border:1px solid rgba(255,255,255,.2);
-  background: rgba(4,6,15,.62);
-  backdrop-filter: blur(18px) saturate(150%);
-  box-shadow: 0 18px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.2);
-  font-size:18px; cursor:pointer;
-  transition: transform .22s var(--spring), background .22s var(--ease), border-color .22s var(--ease);
+/* ---------- CTA COMMANDER (intégré au header, centré verticalement) ---------- */
+.headerCta{
+  position:relative;
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  height:44px; padding:0 20px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.28);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background-size:160% 160%;
+  animation: gradShift 5s ease infinite;
+  color:#fff; font-weight:800; font-size:14px;
+  font-family:var(--font-body);
+  cursor:pointer; overflow:visible;
+  box-shadow: 0 12px 34px rgba(255,30,60,.30), inset 0 1px 0 rgba(255,255,255,.45);
+  transition: transform .22s var(--spring), box-shadow .25s var(--ease);
   will-change: transform;
+  flex:0 0 auto; white-space:nowrap;
 }
-.cartBtn:hover{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.3); }
-.cartBtn:active{ transform: scale(.95); }
+.headerCta:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 50px rgba(255,30,60,.42), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.headerCta:active{ transform: scale(.96); }
+.headerCta .cartIcon{
+  flex:0 0 auto;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,.3));
+}
 .cartPulse{
   position:absolute; width:10px; height:10px; border-radius:999px;
-  right:6px; top:6px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 0 0 0 rgba(255,30,60,.3);
+  right:-2px; top:-2px;
+  background:#7CFFB2;
+  border:2px solid rgba(4,6,15,.9);
+  box-shadow: 0 0 0 0 rgba(124,255,178,.4);
   animation: pulse 1.8s infinite;
 }
 @keyframes pulse{
-  0%{ box-shadow: 0 0 0 0 rgba(255,30,60,.35); }
-  70%{ box-shadow: 0 0 0 10px rgba(255,30,60,0); }
-  100%{ box-shadow: 0 0 0 0 rgba(255,30,60,0); }
+  0%{ box-shadow: 0 0 0 0 rgba(124,255,178,.45); }
+  70%{ box-shadow: 0 0 0 9px rgba(124,255,178,0); }
+  100%{ box-shadow: 0 0 0 0 rgba(124,255,178,0); }
+}
+
+/* ---------- MICRO-COPY SOUS CTA ---------- */
+.ctaNote{
+  display:flex; align-items:center; gap:8px;
+  margin-top:12px;
+  font-size:12.5px;
+  color: rgba(238,242,255,.6);
+}
+.ctaNote .dot{
+  width:6px; height:6px; border-radius:99px;
+  background:#39e07f; flex:0 0 6px;
+  box-shadow:0 0 8px rgba(57,224,127,.7);
+}
+
+/* ---------- COMMENT ÇA MARCHE ---------- */
+.stepsRow{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+@media (max-width: 760px){ .stepsRow{ grid-template-columns:1fr; } }
+.stepCard{ padding:24px; }
+.stepNum{
+  width:42px; height:42px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-weight:700; font-size:18px; color:#fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 12px 30px rgba(255,30,60,.3), inset 0 1px 0 rgba(255,255,255,.4);
+  margin-bottom:14px;
+}
+.stepCard h3{ font-size:16.5px; }
+.stepCard p{ margin:0; font-size:14px; }
+.stepArrow{
+  display:none;
+}
+
+/* ---------- TOUT INCLUS (value stack) ---------- */
+.includedCard{ margin-top:16px; padding:22px 24px; }
+.includedCard h3{
+  font-family:var(--font-display);
+  font-size:16px; margin-bottom:14px;
+}
+.includedCard h3 em{
+  font-style:normal;
+  background: linear-gradient(120deg, var(--accent2), #ffb3c2);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.includedList{
+  list-style:none; padding:0; margin:0;
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:10px 18px;
+}
+@media (max-width: 900px){ .includedList{ grid-template-columns:repeat(2, 1fr); } }
+@media (max-width: 560px){ .includedList{ grid-template-columns:1fr; } }
+.includedList li{
+  display:flex; align-items:flex-start; gap:10px;
+  margin:0; font-size:14px; color:var(--muted);
+}
+.includedList li::before{
+  content:"✓";
+  flex:0 0 20px;
+  width:20px; height:20px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:7px;
+  font-size:11px; font-weight:900; color:#fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 6px 16px rgba(255,30,60,.3), inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+/* Note "inclut" dans l'estimation */
+.estimateIncludes{
+  margin-top:10px; padding-top:10px;
+  border-top:1px dashed rgba(255,255,255,.14);
+  font-size:12.5px; color: rgba(238,242,255,.6);
+}
+
+/* ---------- GARANTIES ---------- */
+.guaranteeRow{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:18px; }
+@media (max-width: 900px){ .guaranteeRow{ grid-template-columns:repeat(2, 1fr); } }
+@media (max-width: 520px){ .guaranteeRow{ grid-template-columns:1fr; } }
+.guarantee{
+  display:flex; gap:12px; align-items:flex-start;
+  padding:15px 16px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.11);
+  background: rgba(0,0,0,.20);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
+  transition: transform .25s var(--spring), border-color .25s var(--ease);
+}
+.guarantee:hover{ transform: translateY(-3px); border-color: rgba(255,255,255,.2); }
+.guarantee .gIcon{
+  width:32px; height:32px; flex:0 0 32px;
+  border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px;
+  background: linear-gradient(135deg, rgba(255,30,60,.25), rgba(91,43,214,.2));
+  border:1px solid rgba(255,255,255,.14);
+}
+.guarantee b{ display:block; font-size:13.5px; margin-bottom:3px; }
+.guarantee span{ color:var(--muted); font-size:12.5px; line-height:1.4; }
+
+/* ---------- BOUTON "CHOISIR" SUR LES TARIFS ---------- */
+.tarifChoose{
+  position:relative; overflow:hidden;
+  margin-top:14px; width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+  color:var(--text); font-weight:700; font-size:13px; cursor:pointer;
+  font-family:var(--font-body);
+  transition: transform .22s var(--spring), background .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease);
+}
+.tarifChoose:hover{
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-color: rgba(255,255,255,.3);
+  box-shadow: 0 12px 30px rgba(255,30,60,.28), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.tarifChoose:active{ transform: scale(.97); }
+
+/* ---------- BANNIÈRE CTA ---------- */
+.ctaBanner{
+  text-align:center;
+  padding:44px 28px !important;
+}
+.ctaBanner h2{
+  justify-content:center;
+  font-size: clamp(24px, 3.4vw, 34px);
+  margin-bottom:10px;
+}
+.ctaBanner h2::after{ display:none; }
+.ctaBanner p{
+  max-width:520px; margin:0 auto 6px;
+}
+.ctaBanner .btnRow{ justify-content:center; margin-top:22px; }
+.ctaBlob{
+  position:absolute; left:-90px; bottom:-90px;
+  width:260px; height:260px;
+  background: linear-gradient(135deg, rgba(91,43,214,.4), rgba(255,30,60,.45));
+  filter: blur(6px);
+  opacity:.45;
+  border-radius: 46% 54% 58% 42% / 48% 42% 58% 52%;
+  animation: morph 12s ease-in-out infinite, spinSlow 34s linear infinite;
+  pointer-events:none;
 }
 
 /* ---------- MODAL ---------- */
@@ -427,6 +652,12 @@ li{ margin-bottom:8px; color:var(--muted); }
   display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
   padding:28px 28px 18px;
   border-bottom:1px solid rgba(255,255,255,.08);
+}
+.modalHeader .modalTitleRow{
+  display:flex; align-items:center; gap:12px;
+}
+.modalHeader .brandMark{
+  width:30px; height:30px; flex:0 0 30px;
 }
 .modalHeader h2{ margin:0; font-size:18px; }
 .modalHeader h2::after{ display:none; }
@@ -524,6 +755,85 @@ select{
 }
 select:hover{ background-color: rgba(255,255,255,.04); }
 
+/* Fallback si le select natif s'affiche quand même */
+option{ background:#0b0e1e; color:var(--text); }
+
+/* ---------- SELECT CUSTOM (liquid glass) ---------- */
+select.enhanced-native{
+  position:absolute; width:1px; height:1px;
+  opacity:0; pointer-events:none;
+}
+.customSelect{ position:relative; }
+.csBtn{
+  position:relative;
+  width:100%; padding:14px 48px 14px 15px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+  color:var(--text); font-size:15px; text-align:left;
+  font-family:var(--font-body); cursor:pointer;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s var(--ease);
+}
+.csBtn.placeholder{ color:rgba(238,242,255,.5); }
+.csBtn::after{
+  content:"";
+  position:absolute; right:20px; top:50%;
+  width:8px; height:8px;
+  border-right:2px solid rgba(255,255,255,.7);
+  border-bottom:2px solid rgba(255,255,255,.7);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform .28s var(--spring);
+}
+.customSelect.open .csBtn,
+.csBtn:focus-visible{
+  border-color: rgba(255,30,60,.55);
+  background: rgba(255,255,255,.06);
+  box-shadow: 0 0 0 4px rgba(255,30,60,.12), inset 0 1px 0 rgba(255,255,255,.08);
+  outline:none;
+}
+.customSelect.open .csBtn::after{ transform: translateY(-30%) rotate(-135deg); }
+
+.csList{
+  position:absolute; left:0; right:0; top:calc(100% + 8px);
+  z-index:60;
+  padding:6px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.16);
+  background:
+    linear-gradient(115deg, rgba(255,255,255,.06), transparent 45%),
+    rgba(9,12,28,.94);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: 0 24px 60px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.18);
+  max-height:264px; overflow:auto;
+  opacity:0; transform: translateY(-6px) scale(.98);
+  pointer-events:none;
+  transition: opacity .22s var(--ease), transform .25s var(--spring);
+}
+.customSelect.open .csList{
+  opacity:1; transform: translateY(0) scale(1);
+  pointer-events:auto;
+}
+.csOpt{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:11px 13px;
+  border-radius:11px;
+  font-size:14.5px; color:var(--muted);
+  cursor:pointer;
+  transition: background .15s var(--ease), color .15s var(--ease);
+}
+.csOpt:hover{ background: rgba(255,255,255,.08); color:#fff; }
+.csOpt.selected{
+  background: linear-gradient(135deg, rgba(255,30,60,.30), rgba(255,92,122,.16));
+  color:#fff;
+}
+.csOpt.selected::after{
+  content:"✓";
+  font-weight:900; font-size:13px;
+  color:var(--accent2);
+}
+
 .twoCols{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
 @media (max-width: 640px){ .twoCols{ grid-template-columns:1fr; } }
 .hint{ font-size:13px; color: rgba(238,242,255,.64); line-height:1.45; }
@@ -566,7 +876,103 @@ button.primary{
 button.primary:hover{ transform: translateY(-2px); box-shadow: 0 24px 70px rgba(255,30,60,.32), inset 0 1px 0 rgba(255,255,255,.5); }
 button.primary:active{ transform: scale(.98); }
 
+/* ---------- ÉCRAN DE SUCCÈS (coche animée + confettis) ---------- */
+.successPanel{
+  position:relative; overflow:hidden;
+  text-align:center;
+  padding:44px 26px !important;
+}
+.confettiLayer{
+  position:absolute; inset:0;
+  pointer-events:none; overflow:hidden;
+  border-radius:inherit;
+}
+.confettiBit{
+  position:absolute; top:36%; left:50%;
+  width:9px; height:9px; border-radius:2px;
+  opacity:0;
+}
+.checkWrap{
+  position:relative;
+  width:108px; height:108px;
+  margin:0 auto 20px;
+}
+/* Ondes qui s'échappent de la coche */
+.checkWrap::before,
+.checkWrap::after{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:50%;
+  border:2px solid rgba(57,224,127,.5);
+  opacity:0;
+  animation: ringPulse 1.5s ease-out .55s 2;
+}
+.checkWrap::after{ animation-delay:.95s; }
+@keyframes ringPulse{
+  0%{ opacity:.85; transform:scale(.72); }
+  100%{ opacity:0; transform:scale(1.65); }
+}
+.checkmark{
+  width:100%; height:100%;
+  display:block;
+  border-radius:50%;
+  stroke-width:3;
+  stroke:#fff;
+  stroke-miterlimit:10;
+  filter: drop-shadow(0 0 18px rgba(57,224,127,.45));
+  animation: checkFill .4s ease-in-out .4s forwards, checkScale .3s ease-in-out .9s both;
+}
+.checkmark-circle{
+  stroke-dasharray:166;
+  stroke-dashoffset:166;
+  stroke-width:3;
+  stroke:url(#checkGrad);
+  fill:none;
+  animation: checkStroke .6s cubic-bezier(.65,0,.45,1) forwards;
+}
+.checkmark-check{
+  transform-origin:50% 50%;
+  stroke-dasharray:48;
+  stroke-dashoffset:48;
+  animation: checkStroke .3s cubic-bezier(.65,0,.45,1) .7s forwards;
+}
+@keyframes checkStroke{ 100%{ stroke-dashoffset:0; } }
+@keyframes checkScale{
+  0%,100%{ transform:none; }
+  50%{ transform:scale3d(1.12,1.12,1); }
+}
+@keyframes checkFill{ 100%{ box-shadow: inset 0 0 0 60px rgba(57,224,127,.10); } }
+.successTitle{
+  font-family:var(--font-display);
+  font-size:26px; letter-spacing:-.4px;
+  margin-bottom:8px;
+  background: linear-gradient(120deg, #7CFFB2, #39e07f 45%, #eef2ff);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.successPanel p{ max-width:420px; margin:0 auto 6px; }
+.successPanel .btnRow{ justify-content:center; margin-top:20px; }
+
 footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,242,255,.55); }
+
+/* ---------- BOUTON COPIER EMAIL ---------- */
+.copyBtn{
+  display:inline-flex; align-items:center; gap:6px;
+  margin-left:10px;
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06);
+  color:var(--text); font-size:12.5px; font-weight:700;
+  font-family:var(--font-body); cursor:pointer;
+  transition: transform .22s var(--spring), background .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
+}
+.copyBtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.26); }
+.copyBtn.copied{
+  background: rgba(57,224,127,.15);
+  border-color: rgba(57,224,127,.4);
+  color:#7CFFB2;
+}
 
 /* ---------- RÉVÉLATIONS AU SCROLL ---------- */
 .reveal{ opacity:0; transform: translateY(34px) scale(.985); filter: blur(10px); }
@@ -663,17 +1069,15 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
 </head>
 <body>
 
+<!-- Barre de progression de lecture -->
+<div class="scrollProgress" aria-hidden="true"><span id="scrollBar"></span></div>
+
 <!-- Fond liquide animé -->
 <div class="aurora" aria-hidden="true">
   <span class="b1"></span>
   <span class="b2"></span>
   <span class="b3"></span>
 </div>
-
-<button class="cartBtn magnetic" id="openOrder" title="Commander" aria-label="Rejoindre la liste d'attente">
-  ⏳
-  <span class="cartPulse" aria-hidden="true"></span>
-</button>
 
 <header id="siteHeader">
   <div class="wrap">
@@ -683,6 +1087,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     </div>
     <nav>
       <a href="#services">Services</a>
+      <a href="#process">Process</a>
       <a href="#tarifs">Tarifs</a>
       <a href="#options">Options</a>
       <a href="#livraison">Livraison</a>
@@ -691,6 +1096,15 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
       <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
     </nav>
+    <button class="headerCta magnetic" id="openOrder" type="button" title="Commander" aria-label="Rejoindre la liste d'attente">
+      <svg class="cartIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="9" cy="20.5" r="1.6"/>
+        <circle cx="18" cy="20.5" r="1.6"/>
+        <path d="M2.5 3.5h2.2l2.3 11.6a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21.5 7.5H6"/>
+      </svg>
+      <span>Commander</span>
+      <span class="cartPulse" aria-hidden="true"></span>
+    </button>
   </div>
 </header>
 
@@ -702,34 +1116,55 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
       <div class="heroBlob" aria-hidden="true"></div>
       <span class="sweep" aria-hidden="true"></span>
       <h1>Montage vidéo —<br>formats longs <span class="liquidWord">YouTube</span></h1>
-      <p>Je transforme tes rushs en vidéos captivantes. Spécialiste du rythme, du storytelling et de la rétention.</p>
+      <p>Des vidéos que tes viewers regardent <strong style="color:var(--text);">jusqu'au bout</strong>. Tu m'envoies tes rushs, je m'occupe du rythme, du storytelling et du sound design — toi, tu te concentres sur ton contenu.</p>
 
       <div class="badges">
-        <span class="badge"><span class="dot"></span>Vidéos longues</span>
+        <span class="badge"><span class="dot"></span>À partir de 20 €</span>
         <span class="badge"><span class="dot"></span>Jusqu’à 40 min</span>
         <span class="badge"><span class="dot"></span>Sound design inclus</span>
         <span class="badge"><span class="dot"></span>1 révision incluse</span>
+        <span class="badge"><span class="dot"></span>Formé par Editing 360</span>
       </div>
 
       <div class="btnRow">
-        <button class="btn primary magnetic" id="openOrder2" type="button">Commander</button>
-        <a class="btn magnetic" href="#tarifs">Voir les tarifs</a>
+        <button class="btn primary magnetic" id="openOrder2" type="button">Commander mon montage</button>
+        <a class="btn magnetic" href="#extraits">Voir mon travail</a>
       </div>
+      <div class="ctaNote"><span class="dot"></span>Demande gratuite et sans engagement • Prix confirmé avant tout paiement</div>
     </div>
 
-    <div class="card glass heroRight">
-      <div class="mini stagger" style="margin-bottom:12px;">
-        <b style="display:block;">Disponibilité</b>
-        <span class="availability"><i></i>ouverte</span>
+    <!-- Vidéo de présentation : cliquable, contrôles YouTube actifs -->
+    <div class="card glass heroVideoCard">
+      <div class="heroVideoThumb">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/H6AUGUcHVOo?rel=0&modestbranding=1&playsinline=1"
+          title="Présentation — TAYZEN, monteur vidéo"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
       </div>
-      <div class="mini stagger" style="margin-bottom:12px;">
-        <b>Délais moyens</b>
-        <span>3–7 jours (courts) • 7–11 jours (30–40 min)</span>
+      <div class="heroVideoMeta">
+        <span class="playDot" aria-hidden="true">▶</span>
+        <div>
+          <b>Ma vidéo de présentation</b>
+          <span>Ce que je fais, comment je bosse — clique pour lancer.</span>
+        </div>
       </div>
-      <div class="mini stagger">
-        <b>Paiement</b>
-        <span>PayPal • 100% avant livraison</span>
-      </div>
+    </div>
+  </div>
+
+  <div class="infoRow">
+    <div class="mini stagger">
+      <b>Disponibilité</b>
+      <span class="availability"><i></i>ouverte</span>
+    </div>
+    <div class="mini stagger">
+      <b>Délais moyens</b>
+      <span>3–7 jours (courts) • 7–11 jours (30–40 min)</span>
+    </div>
+    <div class="mini stagger">
+      <b>Paiement</b>
+      <span>Facture PayPal — <strong style="color:var(--text);">payable par carte bancaire</strong>, pas besoin de compte PayPal • 100% avant livraison</span>
     </div>
   </div>
 </section>
@@ -748,28 +1183,61 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   </div>
 </section>
 
+<section id="process" class="reveal">
+  <h2>Comment ça marche</h2>
+  <div class="stepsRow">
+    <div class="card glass stepCard stagger">
+      <div class="stepNum">1</div>
+      <h3>Tu m'envoies tes rushs</h3>
+      <p>Tu remplis le formulaire (2 minutes) avec ton lien Drive ou WeTransfer. Je te réponds par email avec le prix exact et le délai.</p>
+    </div>
+    <div class="card glass stepCard stagger">
+      <div class="stepNum">2</div>
+      <h3>Je monte ta vidéo</h3>
+      <p>Cuts propres, rythme travaillé, sound design. Pendant ce temps, tu prépares ta prochaine vidéo tranquillement.</p>
+    </div>
+    <div class="card glass stepCard stagger">
+      <div class="stepNum">3</div>
+      <h3>Tu valides, tu publies</h3>
+      <p>Tu fais tes retours au timecode sur Frame.io, j'ajuste, et tu reçois ton MP4 prêt à mettre en ligne.</p>
+    </div>
+  </div>
+</section>
+
 <section id="tarifs" class="reveal">
   <h2>Tarifs</h2>
 
   <div class="tarifsRow">
     <div class="card glass tarifCard stagger">
       <div><h3>6–12 min</h3></div>
-      <div class="price">20–35 €</div>
+      <div>
+        <div class="price">20–35 €</div>
+        <button class="tarifChoose" type="button" data-duration="6-12">Choisir →</button>
+      </div>
     </div>
 
     <div class="card glass tarifCard stagger">
       <div><h3>12–20 min</h3></div>
-      <div class="price">40–60 €</div>
+      <div>
+        <div class="price">40–60 €</div>
+        <button class="tarifChoose" type="button" data-duration="12-20">Choisir →</button>
+      </div>
     </div>
 
     <div class="card glass tarifCard stagger">
       <div><h3>20–30 min</h3></div>
-      <div class="price">70–100 €</div>
+      <div>
+        <div class="price">70–100 €</div>
+        <button class="tarifChoose" type="button" data-duration="20-30">Choisir →</button>
+      </div>
     </div>
 
     <div class="card glass tarifCard stagger">
       <div><h3>40 min</h3></div>
-      <div class="price">110–150 €</div>
+      <div>
+        <div class="price">110–150 €</div>
+        <button class="tarifChoose" type="button" data-duration="40">Choisir →</button>
+      </div>
     </div>
 
     <div class="card glass tarifCard featured stagger">
@@ -777,11 +1245,57 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
         <h3>+40 min</h3>
         <p class="hint" style="margin-top:8px;">Demande spéciale</p>
       </div>
-      <div class="price">150 € +</div>
+      <div>
+        <div class="price">150 € +</div>
+        <button class="tarifChoose" type="button" data-duration="40+">Me contacter →</button>
+      </div>
     </div>
   </div>
 
-  <p style="margin-top:12px">1 révision incluse • Paiement avant livraison (PayPal uniquement) • Shorts non proposés</p>
+  <div class="card glass includedCard">
+    <h3>Chaque montage inclut <em>tout ça</em> — sans supplément :</h3>
+    <ul class="includedList">
+      <li>Cuts propres et rythme travaillé</li>
+      <li>Sound design complet</li>
+      <li>Storytelling pensé pour la rétention</li>
+      <li>Export MP4 (H.264) prêt à publier</li>
+      <li>Retours au timecode via Frame.io</li>
+      <li>1 révision incluse</li>
+    </ul>
+  </div>
+
+  <div class="guaranteeRow">
+    <div class="guarantee stagger">
+      <div class="gIcon">✓</div>
+      <div>
+        <b>1 révision incluse</b>
+        <span>Et jusqu'à +5 en option pour un résultat exactement comme tu veux.</span>
+      </div>
+    </div>
+    <div class="guarantee stagger">
+      <div class="gIcon">€</div>
+      <div>
+        <b>Prix confirmé avant paiement</b>
+        <span>Aucune surprise : devis exact validé par email. Facture PayPal payable par carte bancaire.</span>
+      </div>
+    </div>
+    <div class="guarantee stagger">
+      <div class="gIcon">⏱</div>
+      <div>
+        <b>Retard = remboursement partiel</b>
+        <span>Si je dépasse le délai annoncé, je te rembourse une partie.</span>
+      </div>
+    </div>
+    <div class="guarantee stagger">
+      <div class="gIcon">💬</div>
+      <div>
+        <b>Retours simples</b>
+        <span>Tu commentes directement au timecode sur Frame.io, sans prise de tête.</span>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:14px">Paiement avant livraison via facture PayPal — <strong>payable par simple carte bancaire, aucun compte PayPal nécessaire</strong> • Shorts non proposés</p>
 </section>
 
 <section id="options" class="reveal">
@@ -827,7 +1341,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
 
 <section id="extraits" class="reveal">
   <h2>Extraits</h2>
-  <p>Quelques exemples. Lecture automatique en boucle (non cliquable).</p>
+  <p>La preuve en images : regarde le rythme, les cuts et le sound design. Lecture automatique en boucle (non cliquable).</p>
 
   <div class="videoGrid" style="margin-top:14px;">
 
@@ -981,21 +1495,42 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
 <section id="faq" class="reveal">
   <h2>FAQ</h2>
   <div class="card glass">
-    <p><strong>Shorts ?</strong><br>Non.</p>
-    <p><strong>Durée maximale ?</strong><br>Jusqu’à 40 minutes (au-delà : demande spéciale).</p>
-    <p><strong>Révisions ?</strong><br>1 incluse. Révisions supplémentaires : +7 € / révision (max +5).</p>
-    <p><strong>Comment je fais mes retours ?</strong><br>Via Frame.io (commentaires au timecode).</p>
-    <p><strong>Délais ?</strong><br>3–7 jours (projets courts) • 7–11 jours (30–40 min).</p>
-    <p><strong>Paiement ?</strong><br>PayPal uniquement (100 % avant livraison).</p>
-    <p><strong>Retard ?</strong><br>Remboursement partiel.</p>
-    <p><strong>Miniatures ?</strong><br>Non.</p>
+    <p><strong>Shorts ?</strong><br>Non — je suis spécialisé à 100 % dans les formats longs. C'est ce qui me permet d'être vraiment bon sur le rythme et la rétention.</p>
+    <p><strong>Durée maximale ?</strong><br>Jusqu’à 40 minutes en standard. Au-delà, contacte-moi : je prends les demandes spéciales au cas par cas.</p>
+    <p><strong>Révisions ?</strong><br>1 incluse dans chaque montage. Et grâce à la règle « 1 commentaire = 1 modification », tes retours sont appliqués précisément. Besoin de plus ? +7 € / révision (max +5).</p>
+    <p><strong>Comment je fais mes retours ?</strong><br>Via Frame.io : tu cliques sur le moment exact de la vidéo et tu écris ton commentaire. Simple, rapide, zéro prise de tête.</p>
+    <p><strong>Délais ?</strong><br>3–7 jours (projets courts) • 7–11 jours (30–40 min). Le délai exact est annoncé par email avant tout paiement.</p>
+    <p><strong>Paiement ?</strong><br>Je t'envoie une facture PayPal, <strong>payable par simple carte bancaire — pas besoin d'avoir un compte PayPal</strong>. Paiement sécurisé, 100 % avant livraison, et toujours après validation du devis exact par email.</p>
+    <p><strong>Retard ?</strong><br>Si je dépasse le délai annoncé, remboursement partiel. C'est ma garantie, noir sur blanc.</p>
+    <p><strong>Miniatures ?</strong><br>Non — je préfère mettre 100 % de mon énergie dans le montage.</p>
+    <p style="margin-top:18px; padding-top:16px; border-top:1px solid rgba(255,255,255,.08);">
+      <strong style="color:var(--text);">Une autre question ?</strong> Écris-moi à tayzenprofr@gmail.com — ou envoie directement ta demande, elle est gratuite et sans engagement.
+    </p>
+    <div class="btnRow" style="margin-top:14px;">
+      <button class="btn primary magnetic" id="openOrderFaq" type="button">Envoyer ma demande</button>
+    </div>
+  </div>
+</section>
+
+<!-- Bannière d'appel à l'action -->
+<section id="cta" class="reveal">
+  <div class="card glass sheen ctaBanner">
+    <div class="ctaBlob" aria-hidden="true"></div>
+    <span class="sweep" aria-hidden="true"></span>
+    <h2>Prêt à faire décoller tes vidéos ?</h2>
+    <p>Pendant que tu filmes ta prochaine vidéo, je monte celle-ci. Envoie ta demande maintenant — elle est <strong style="color:var(--text);">gratuite et sans engagement</strong>, et tu reçois un devis exact par email.</p>
+    <div class="btnRow">
+      <button class="btn primary magnetic" id="openOrder3" type="button">Commander mon montage</button>
+      <a class="btn magnetic" href="#extraits">Revoir les extraits</a>
+    </div>
+    <div class="ctaNote" style="justify-content:center;"><span class="dot"></span>Disponibilité ouverte • À partir de 20 € • Prix confirmé avant tout paiement</div>
   </div>
 </section>
 
 <section id="contact" class="reveal">
   <h2>Contact</h2>
   <div class="card glass">
-    <p>Email : <strong>tayzenprofr@gmail.com</strong></p>
+    <p>Email : <strong id="contactEmail">tayzenprofr@gmail.com</strong><button class="copyBtn" id="copyEmail" type="button">Copier</button></p>
     <p>Langue : FR • EN (coming soon)</p>
   </div>
 </section>
@@ -1008,8 +1543,11 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
     <div class="modalHeader">
       <div>
-        <h2 id="orderTitle">Rejoindre la liste d'attente</h2>
-        <p>Tout se fait par email. Les rushs se partagent via Google Drive ou WeTransfer.</p>
+        <div class="modalTitleRow">
+          <div class="brandMark" aria-hidden="true"></div>
+          <h2 id="orderTitle">Rejoindre la liste d'attente</h2>
+        </div>
+        <p>Demande gratuite et sans engagement — je te réponds par email avec un devis exact avant tout paiement. Les rushs se partagent via Google Drive ou WeTransfer.</p>
       </div>
       <button class="closeBtn" id="closeOrder" aria-label="Fermer">✕</button>
     </div>
@@ -1085,8 +1623,9 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
                 </div>
 
                 <div>
-                  <label for="paypal">Ton PayPal</label>
-                  <input id="paypal" type="text" name="paypal" placeholder="Email PayPal ou lien PayPal.me" required>
+                  <label for="paypal">Email pour la facture</label>
+                  <input id="paypal" type="text" name="paypal" placeholder="Email où recevoir la facture PayPal" required>
+                  <div class="hint" style="margin-top:8px;">Tu recevras une facture PayPal, <strong>payable par carte bancaire</strong> — pas besoin d'avoir un compte PayPal.</div>
                 </div>
               </div>
 
@@ -1165,6 +1704,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
                   </div>
                   <div class="estimateValue">—</div>
                   <div class="estimateMeta">Choisis une durée pour afficher une estimation.</div>
+                  <div class="estimateIncludes">Inclut : cuts, rythme, sound design, storytelling, export MP4 prêt à publier et 1 révision.</div>
                 </div>
 
                 <div class="hint" id="revSummary">
@@ -1183,15 +1723,36 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
               <input type="hidden" name="source" value="Portfolio TAYZEN">
               <input type="hidden" name="tarif_estime" id="tarif_estime" value="">
 
-              <button class="primary" type="submit">Envoyer la demande</button>
+              <div class="hint" style="text-align:center;">
+                🔒 Paiement sécurisé via facture PayPal (carte bancaire acceptée, sans compte) • Rien à payer maintenant — le devis exact est confirmé par email d'abord.
+              </div>
+
+              <button class="primary" type="submit">Envoyer ma demande gratuite</button>
             </form>
 
             <div id="orderSuccess" style="display:none; margin-top:14px;">
-              <div class="card glass" style="margin:0;">
-                <h3>Demande envoyée ✅</h3>
-                <p style="margin:0;">
-                  Merci. Je te répondrai par email afin de valider le projet et t'informer du délai pour la liste d'attente.
+              <div class="card glass successPanel" style="margin:0;">
+                <div class="confettiLayer" aria-hidden="true"></div>
+                <div class="checkWrap">
+                  <svg class="checkmark" viewBox="0 0 52 52" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#7CFFB2"/>
+                        <stop offset="100%" stop-color="#39e07f"/>
+                      </linearGradient>
+                    </defs>
+                    <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                  </svg>
+                </div>
+                <h3 class="successTitle">Demande envoyée !</h3>
+                <p>
+                  Merci ! Je te réponds par email pour valider le projet, te donner le prix exact et ton délai.
+                  <strong style="color:var(--text);">Pense à vérifier tes spams.</strong>
                 </p>
+                <div class="btnRow">
+                  <button class="btn primary" id="successClose" type="button">Parfait !</button>
+                </div>
               </div>
             </div>
 
@@ -1242,9 +1803,10 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     });
   });
 
-  // ---------- Header : état "scrolled" ----------
+  // ---------- Header : état "scrolled" + barre de progression ----------
   const headerEl = document.getElementById("siteHeader");
   const auroraEl = document.querySelector(".aurora");
+  const scrollBar = document.getElementById("scrollBar");
   let headerTick = false;
   window.addEventListener("scroll", () => {
     if (headerTick) return;
@@ -1255,6 +1817,9 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
       if (auroraEl && !prefersReducedMotion) {
         auroraEl.style.transform = `translate3d(0, ${y * -0.05}px, 0)`;
       }
+      // Barre de progression de lecture
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      scrollBar.style.width = (max > 0 ? (y / max) * 100 : 0) + "%";
       headerTick = false;
     });
   }, { passive: true });
@@ -1303,7 +1868,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   }
 
   // ---------- Onde liquide au clic (ripple) ----------
-  document.querySelectorAll(".btn, button.primary, .cartBtn").forEach((btn) => {
+  document.querySelectorAll(".btn, button.primary, .headerCta, .tarifChoose").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       if (prefersReducedMotion) return;
       const r = btn.getBoundingClientRect();
@@ -1321,6 +1886,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   // ---------- Modal ----------
   const openBtn = document.getElementById("openOrder");
   const openBtn2 = document.getElementById("openOrder2");
+  const openBtn3 = document.getElementById("openOrder3");
   const modal = document.getElementById("orderModal");
   const closeBtn = document.getElementById("closeOrder");
   let lastOpener = openBtn;
@@ -1342,10 +1908,39 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     document.body.style.overflow = "";
     if (lenis) lenis.start();
     if (lastOpener) lastOpener.focus();
+    // Si l'écran de succès était affiché, on remet le formulaire pour la prochaine fois
+    if (typeof resetSuccess === "function") resetSuccess();
   }
 
   openBtn.addEventListener("click", () => openModal(openBtn));
   openBtn2.addEventListener("click", () => openModal(openBtn2));
+  openBtn3.addEventListener("click", () => openModal(openBtn3));
+  const openBtnFaq = document.getElementById("openOrderFaq");
+  if (openBtnFaq) openBtnFaq.addEventListener("click", () => openModal(openBtnFaq));
+
+  // ---------- Copier l'email en un clic ----------
+  const copyEmailBtn = document.getElementById("copyEmail");
+  if (copyEmailBtn) {
+    copyEmailBtn.addEventListener("click", async () => {
+      const email = document.getElementById("contactEmail").textContent.trim();
+      try {
+        await navigator.clipboard.writeText(email);
+        copyEmailBtn.textContent = "Copié ✓";
+        copyEmailBtn.classList.add("copied");
+        setTimeout(() => {
+          copyEmailBtn.textContent = "Copier";
+          copyEmailBtn.classList.remove("copied");
+        }, 1800);
+      } catch (err) {
+        // Fallback : sélectionne le texte pour copie manuelle
+        const range = document.createRange();
+        range.selectNodeContents(document.getElementById("contactEmail"));
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    });
+  }
   closeBtn.addEventListener("click", closeModal);
   modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
   window.addEventListener("keydown", (e) => {
@@ -1420,9 +2015,136 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   rushDuration.addEventListener("change", updateAll);
   updateAll();
 
+  // ---------- Menus déroulants custom (liquid glass) ----------
+  function closeAllSelects() {
+    document.querySelectorAll(".customSelect.open").forEach((w) => w.classList.remove("open"));
+  }
+
+  function enhanceSelect(sel) {
+    const wrap = document.createElement("div");
+    wrap.className = "customSelect";
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+    sel.classList.add("enhanced-native");
+    sel.setAttribute("tabindex", "-1");
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "csBtn";
+    btn.setAttribute("aria-haspopup", "listbox");
+
+    const list = document.createElement("div");
+    list.className = "csList";
+    list.setAttribute("role", "listbox");
+
+    [...sel.options].filter((o) => !o.disabled).forEach((o) => {
+      const opt = document.createElement("div");
+      opt.className = "csOpt";
+      opt.setAttribute("role", "option");
+      opt.dataset.value = o.value;
+      opt.textContent = o.textContent;
+      opt.addEventListener("click", () => {
+        sel.value = o.value;
+        sel.dispatchEvent(new Event("change", { bubbles: true }));
+        closeAllSelects();
+      });
+      list.appendChild(opt);
+    });
+
+    wrap.appendChild(btn);
+    wrap.appendChild(list);
+
+    function refresh() {
+      const cur = sel.options[sel.selectedIndex];
+      btn.textContent = cur ? cur.textContent : "";
+      btn.classList.toggle("placeholder", !sel.value);
+      list.querySelectorAll(".csOpt").forEach((d) => {
+        d.classList.toggle("selected", d.dataset.value === sel.value);
+      });
+    }
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const wasOpen = wrap.classList.contains("open");
+      closeAllSelects();
+      if (!wasOpen) wrap.classList.add("open");
+    });
+
+    sel.addEventListener("change", refresh);
+    refresh();
+  }
+
+  document.querySelectorAll("#orderForm select").forEach(enhanceSelect);
+  document.addEventListener("click", closeAllSelects);
+  // Échap ferme d'abord le menu déroulant, sans fermer la modal (phase capture)
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && document.querySelector(".customSelect.open")) {
+      closeAllSelects();
+      e.stopImmediatePropagation();
+    }
+  }, true);
+
+  // ---------- Cartes tarifs → modal pré-remplie ----------
+  document.querySelectorAll(".tarifChoose").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const d = btn.dataset.duration;
+      if (d) {
+        finalDuration.value = d;
+        finalDuration.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      openModal(btn);
+    });
+  });
+
   // ---------- Envoi du formulaire ----------
   const orderForm = document.getElementById("orderForm");
   const orderSuccess = document.getElementById("orderSuccess");
+
+  // Pluie de confettis (respecte prefers-reduced-motion)
+  function launchConfetti(layer) {
+    if (prefersReducedMotion || !layer) return;
+    const colors = ["#ff1e3c", "#ff5c7a", "#7CFFB2", "#39e07f", "#5b2bd6", "#ffd166", "#7cc4ff"];
+    for (let i = 0; i < 42; i++) {
+      const bit = document.createElement("span");
+      bit.className = "confettiBit";
+      bit.style.background = colors[i % colors.length];
+      layer.appendChild(bit);
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 80 + Math.random() * 180;
+      const x = Math.cos(angle) * dist;
+      const y = Math.sin(angle) * dist * 0.7 - 50;
+      bit.animate([
+        { transform: "translate(-50%,-50%) rotate(0deg) scale(1)", opacity: 1 },
+        { transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y + 160}px)) rotate(${Math.random() * 720 - 360}deg) scale(.5)`, opacity: 0 }
+      ], {
+        duration: 1300 + Math.random() * 900,
+        delay: Math.random() * 180,
+        easing: "cubic-bezier(.2,.7,.3,1)",
+        fill: "forwards"
+      });
+      setTimeout(() => bit.remove(), 2800);
+    }
+  }
+
+  function showSuccess() {
+    orderForm.style.display = "none";
+    orderSuccess.style.display = "block";
+    // Relance les animations de la coche à chaque envoi
+    const checkWrap = orderSuccess.querySelector(".checkWrap");
+    if (checkWrap) checkWrap.innerHTML = checkWrap.innerHTML;
+    launchConfetti(orderSuccess.querySelector(".confettiLayer"));
+    modal.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+  }
+
+  function resetSuccess() {
+    if (orderSuccess.style.display === "block") {
+      orderSuccess.style.display = "none";
+      orderForm.style.display = "";
+    }
+  }
+
+  const successCloseBtn = document.getElementById("successClose");
+  if (successCloseBtn) successCloseBtn.addEventListener("click", closeModal);
 
   orderForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -1442,7 +2164,9 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
       if (response.ok) {
         orderForm.reset();
         updateAll();
-        orderSuccess.style.display = "block";
+        // Resynchronise l'affichage des selects custom après le reset
+        orderForm.querySelectorAll("select").forEach((s) => s.dispatchEvent(new Event("change")));
+        showSuccess();
       } else {
         alert("Erreur lors de l’envoi. Réessaie ou contacte-moi par email.");
       }
@@ -1464,6 +2188,20 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     });
   }, { threshold: 0.12 });
   document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+  // ---------- Scrollspy : illumine le lien de la section en cours ----------
+  const navLinks = [...document.querySelectorAll("nav a[href^='#']")];
+  const spyTargets = navLinks
+    .map((a) => document.querySelector(a.getAttribute("href")))
+    .filter(Boolean);
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const id = "#" + entry.target.id;
+      navLinks.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === id));
+    });
+  }, { rootMargin: "-35% 0px -55% 0px", threshold: 0 });
+  spyTargets.forEach((t) => spy.observe(t));
 
   // ---------- Lazy loading des vidéos YouTube ----------
   const videoObserver = new IntersectionObserver((entries, observer) => {
