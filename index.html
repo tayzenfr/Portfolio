@@ -440,6 +440,69 @@ li{ margin-bottom:8px; color:var(--muted); }
 @keyframes rip{ to{ transform: scale(4); opacity:0; } }
 
 /* ---------- BOUTON FLOTTANT ---------- */
+/* ---------- INTRO CINÉMA (ouverture du site) ---------- */
+.intro{
+  position:fixed; inset:0; z-index:5000;
+  cursor:pointer;
+}
+.intro.off{ display:none; }
+.intro .introPanel{
+  position:absolute; left:0; right:0; height:50.5%;
+  background:#04060f;
+  z-index:1;
+}
+.intro .top{ top:0; animation: introTop .85s cubic-bezier(.7,0,.25,1) 1.6s both; }
+.intro .bottom{ bottom:0; animation: introBottom .85s cubic-bezier(.7,0,.25,1) 1.6s both; }
+@keyframes introTop{ to{ transform:translateY(-101%); } }
+@keyframes introBottom{ to{ transform:translateY(101%); } }
+
+/* La ligne rouge façon timeline qui coupe l'écran */
+.introLine{
+  position:absolute; top:50%; left:50%;
+  height:2px; width:0;
+  transform:translate(-50%,-50%);
+  background:linear-gradient(90deg, transparent, var(--accent) 15%, var(--accent2) 50%, var(--accent) 85%, transparent);
+  box-shadow:0 0 18px rgba(255,30,60,.8), 0 0 50px rgba(255,30,60,.4);
+  z-index:2;
+  animation: introLine .5s var(--ease) 1s both;
+}
+@keyframes introLine{ from{ width:0; opacity:0; } to{ width:100vw; opacity:1; } }
+
+/* Logo + nom au centre */
+.introCenter{
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center; z-index:3;
+  animation: introCenterIn .7s var(--spring) .15s both, introCenterOut .45s var(--ease) 1.35s forwards;
+}
+@keyframes introCenterIn{
+  from{ opacity:0; transform:translate(-50%,-50%) scale(.6); filter:blur(8px); }
+  to{ opacity:1; transform:translate(-50%,-50%) scale(1); filter:blur(0); }
+}
+@keyframes introCenterOut{
+  to{ opacity:0; transform:translate(-50%,-50%) scale(1.15); filter:blur(6px); }
+}
+.introCenter .introMark{
+  width:64px; height:64px; margin:0 auto 16px;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 16px 50px rgba(255,30,60,.45), inset 0 1px 0 rgba(255,255,255,.4);
+  border-radius:46% 54% 58% 42% / 48% 42% 58% 52%;
+  animation: morph 5s ease-in-out infinite;
+}
+.introCenter .introName{
+  font-family:var(--font-display);
+  font-size:clamp(28px, 5vw, 42px);
+  font-weight:700; letter-spacing:.35em; padding-left:.35em;
+  color:var(--text);
+}
+.introCenter .introSub{
+  margin-top:8px;
+  font-size:11px; letter-spacing:.4em; padding-left:.4em;
+  color:rgba(238,242,255,.5);
+  text-transform:uppercase;
+}
+
 /* ---------- CTA COMMANDER (intégré au header, centré verticalement) ---------- */
 .headerCta{
   position:relative;
@@ -1086,6 +1149,62 @@ button.primary:active{ transform: scale(.98); }
 
 footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,242,255,.55); }
 
+/* ---------- AVIS CLIENTS ---------- */
+.avisGrid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; margin-bottom:14px; }
+@media (max-width: 760px){ .avisGrid{ grid-template-columns:1fr; } }
+.avisCard{ padding:20px; }
+.avisStars{ color:#FFD166; letter-spacing:3px; font-size:15px; margin-bottom:10px; text-shadow:0 0 12px rgba(255,209,102,.4); }
+.avisCard .txt{ margin:0 0 12px; font-size:14.5px; color:var(--text); line-height:1.55; }
+.avisWho{ display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:13px; color:var(--muted); flex-wrap:wrap; }
+.avisWho a{ color:var(--accent2); font-weight:700; white-space:nowrap; }
+.avisWho a:hover{ text-decoration:underline; }
+
+/* ---------- PANEL ADMIN (Ctrl+Shift+A) ---------- */
+.adminOverlay{
+  position:fixed; inset:0; z-index:3000;
+  background:rgba(2,4,12,.7); backdrop-filter:blur(8px);
+  display:none; align-items:center; justify-content:center; padding:18px;
+}
+.adminOverlay.open{ display:flex; }
+.adminBox{
+  width:min(720px, 100%); max-height:90vh; overflow:auto;
+  background:rgba(8,11,28,.92);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:22px; padding:26px;
+  box-shadow:0 28px 110px rgba(0,0,0,.7), inset 0 1.5px 0 rgba(255,255,255,.2);
+}
+.adminBox h3{ font-family:var(--font-display); font-size:18px; margin-bottom:4px; }
+.adminBox .sub{ font-size:13px; color:var(--muted); margin-bottom:18px; }
+.adminGrid{ display:grid; gap:12px; }
+.adminGrid.two{ grid-template-columns:1fr 1fr; }
+@media (max-width:620px){ .adminGrid.two{ grid-template-columns:1fr; } }
+.adminBox input, .adminBox textarea, .adminBox select{
+  padding:11px 12px; font-size:14px; border-radius:11px;
+}
+.adminBox label{ font-size:12px; margin-bottom:4px; }
+.adminRow{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:11px 13px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.04);
+  font-size:13px;
+}
+.adminRow .del{
+  background:none; border:1px solid rgba(255,30,60,.4); color:var(--accent2);
+  border-radius:9px; padding:5px 10px; font-size:12px; cursor:pointer;
+  transition: background .15s var(--ease);
+}
+.adminRow .del:hover{ background:rgba(255,30,60,.15); }
+.adminBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.adminBtns .btn{ font-size:13px; padding:11px 15px; }
+.adminStatus{ margin-top:12px; font-size:13px; color:#7CFFB2; min-height:18px; }
+.adminStatus.err{ color:var(--accent2); }
+.adminSection{
+  margin-top:20px; padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.adminSection > b{ display:block; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:rgba(238,242,255,.5); margin-bottom:12px; }
+
 /* ---------- CHIFFRES (compteurs animés) ---------- */
 .statsRow{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:14px; }
 @media (max-width: 760px){ .statsRow{ grid-template-columns:1fr; } }
@@ -1343,7 +1462,11 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   .reveal, .reveal .stagger{ opacity:1 !important; transform:none !important; }
   .aurora span{ animation:none; }
 
-  /* Exception : l'écran de succès garde sa séquence (courte, jouée une fois) */
+  /* Exceptions : l'intro et l'écran de succès gardent leur séquence (courte, jouée une fois) */
+  .intro .top{ animation: introTop .85s cubic-bezier(.7,0,.25,1) 1.6s both !important; }
+  .intro .bottom{ animation: introBottom .85s cubic-bezier(.7,0,.25,1) 1.6s both !important; }
+  .intro .introLine{ animation: introLine .5s var(--ease) 1s both !important; }
+  .intro .introCenter{ animation: introCenterIn .7s var(--spring) .15s both, introCenterOut .45s var(--ease) 1.35s forwards !important; }
   .successPanel .checkmark{ animation: checkFill .4s ease-in-out .4s forwards, checkScale .3s ease-in-out .9s both !important; }
   .successPanel .checkmark-circle{ animation: checkStroke .6s cubic-bezier(.65,0,.45,1) forwards !important; }
   .successPanel .checkmark-check{ animation: checkStroke .3s cubic-bezier(.65,0,.45,1) .7s forwards !important; }
@@ -1358,6 +1481,22 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
 </style>
 </head>
 <body>
+
+<!-- Intro cinéma : écran noir → logo → ligne rouge → ouverture rideau -->
+<div class="intro" id="siteIntro" aria-hidden="true" title="Cliquer pour passer">
+  <div class="introPanel top"></div>
+  <div class="introPanel bottom"></div>
+  <div class="introLine"></div>
+  <div class="introCenter">
+    <div class="introMark"></div>
+    <div class="introName">TAYZEN</div>
+    <div class="introSub">Monteur vidéo</div>
+  </div>
+</div>
+<script>
+// Ne rejoue pas l'intro si déjà vue dans cette session (exécuté avant le rendu)
+try { if (sessionStorage.getItem("tz_intro")) document.getElementById("siteIntro").classList.add("off"); } catch (e) {}
+</script>
 
 <!-- Barre de progression de lecture -->
 <div class="scrollProgress" aria-hidden="true"><span id="scrollBar"></span></div>
@@ -1810,7 +1949,9 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     </div>
   </div>
 
-  <div class="card glass">
+  <div class="avisGrid" id="avisList"></div>
+
+  <div class="card glass" id="avisEmpty">
     <p style="margin:0;">Les avis arrivent ici au fil des commandes — <strong style="color:var(--text);">avec un lien vers ta chaîne</strong>, visible par tous les visiteurs.</p>
   </div>
 </section>
@@ -2180,6 +2321,70 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   </div>
 </div>
 
+<!-- ===== PANEL ADMIN (Ctrl+Shift+A ou 7 clics sur le © du footer) ===== -->
+<div class="adminOverlay" id="adminGate" aria-hidden="true">
+  <div class="adminBox" style="width:min(380px,100%);">
+    <h3>🔐 Accès admin</h3>
+    <p class="sub">Entre le code secret.</p>
+    <input type="password" id="adminCode" placeholder="Code secret" autocomplete="off">
+    <div class="adminBtns">
+      <button class="btn primary" id="adminEnter" type="button">Entrer</button>
+      <button class="btn" id="adminGateClose" type="button">Annuler</button>
+    </div>
+    <div class="adminStatus" id="gateStatus"></div>
+  </div>
+</div>
+
+<div class="adminOverlay" id="adminPanel" aria-hidden="true">
+  <div class="adminBox">
+    <h3>⚙️ Panel admin — Avis</h3>
+    <p class="sub">Ajoute un avis, puis « Publier » : il se commit sur ton repo GitHub et apparaît sur le site (~1 min).</p>
+
+    <div class="adminGrid two">
+      <div><label>Pseudo *</label><input id="aPseudo" type="text" placeholder="Pseudo du client"></div>
+      <div><label>Note /5 *</label>
+        <select id="aNote">
+          <option value="5" selected>★★★★★ (5)</option>
+          <option value="4">★★★★☆ (4)</option>
+          <option value="3">★★★☆☆ (3)</option>
+          <option value="2">★★☆☆☆ (2)</option>
+          <option value="1">★☆☆☆☆ (1)</option>
+        </select>
+      </div>
+      <div><label>Chaîne YouTube</label><input id="aChaine" type="url" placeholder="https://youtube.com/@..."></div>
+      <div><label>Type de vidéo</label><input id="aType" type="text" placeholder="Gaming, Storytelling…"></div>
+    </div>
+    <div style="margin-top:12px;">
+      <label>Avis (la phrase affichée) *</label>
+      <textarea id="aTexte" placeholder="Copie la phrase d'avis reçue par email" style="min-height:70px;"></textarea>
+    </div>
+    <div class="adminBtns">
+      <button class="btn primary" id="aAdd" type="button">+ Ajouter à la liste</button>
+    </div>
+
+    <div class="adminSection">
+      <b>Avis actuels</b>
+      <div class="adminGrid" id="aList"></div>
+    </div>
+
+    <div class="adminSection">
+      <b>Publication GitHub</b>
+      <div class="adminGrid two">
+        <div><label>Utilisateur GitHub</label><input id="ghOwner" type="text" placeholder="ton-pseudo-github"></div>
+        <div><label>Nom du repo</label><input id="ghRepo" type="text" placeholder="mon-site"></div>
+        <div><label>Branche</label><input id="ghBranch" type="text" value="main"></div>
+        <div><label>Token (fine-grained, contents: write)</label><input id="ghToken" type="password" placeholder="github_pat_…"></div>
+      </div>
+      <div class="adminBtns">
+        <button class="btn primary" id="aPublish" type="button">🚀 Publier sur le site</button>
+        <button class="btn" id="aCopy" type="button">Copier le JSON</button>
+        <button class="btn" id="adminClose" type="button">Fermer</button>
+      </div>
+      <div class="adminStatus" id="adminStatus"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Lenis : scroll lissé (chargé en dernier, avec garde-fou si le CDN échoue) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.14/lenis.min.js"></script>
 
@@ -2192,6 +2397,24 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
 
   // ---------- Année dynamique ----------
   document.getElementById("year").textContent = new Date().getFullYear();
+
+  // ---------- Intro cinéma ----------
+  const intro = document.getElementById("siteIntro");
+  if (intro && !intro.classList.contains("off")) {
+    document.body.style.overflow = "hidden";
+    let introDone = false;
+    const endIntro = () => {
+      if (introDone) return;
+      introDone = true;
+      intro.classList.add("off");
+      document.body.style.overflow = "";
+      try { sessionStorage.setItem("tz_intro", "1"); } catch (e) {}
+    };
+    // Fin naturelle après la séquence (filet de sécurité inclus)
+    setTimeout(endIntro, 2550);
+    // Clic n'importe où = passer l'intro
+    intro.addEventListener("click", endIntro);
+  }
 
   // ---------- Scroll lissé (Lenis) ----------
   let lenis = null;
@@ -2986,6 +3209,238 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
       }
     });
   }
+
+  // ---------- Avis clients : chargement + rendu ----------
+  let avisData = [];
+  const avisListEl = document.getElementById("avisList");
+  const avisEmptyEl = document.getElementById("avisEmpty");
+
+  function starsTxt(n) {
+    n = Math.max(1, Math.min(5, parseInt(n, 10) || 5));
+    return "★".repeat(n) + "☆".repeat(5 - n);
+  }
+
+  function renderAvis() {
+    if (!avisListEl) return;
+    avisListEl.innerHTML = "";
+    if (!avisData.length) {
+      if (avisEmptyEl) avisEmptyEl.style.display = "";
+      return;
+    }
+    if (avisEmptyEl) avisEmptyEl.style.display = "none";
+    avisData.forEach((a) => {
+      const card = document.createElement("article");
+      card.className = "card glass avisCard";
+      const st = document.createElement("div");
+      st.className = "avisStars";
+      st.textContent = starsTxt(a.note);
+      const tx = document.createElement("p");
+      tx.className = "txt";
+      tx.textContent = "« " + (a.texte || "") + " »";
+      const who = document.createElement("div");
+      who.className = "avisWho";
+      const left = document.createElement("span");
+      left.textContent = (a.pseudo || "Anonyme") + (a.type ? " • " + a.type : "");
+      who.appendChild(left);
+      if (a.chaine) {
+        const link = document.createElement("a");
+        link.href = a.chaine;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "Voir la chaîne →";
+        who.appendChild(link);
+      }
+      card.append(st, tx, who);
+      avisListEl.appendChild(card);
+    });
+  }
+
+  fetch("avis.json?v=" + Date.now())
+    .then((r) => (r.ok ? r.json() : []))
+    .then((d) => { avisData = Array.isArray(d) ? d : []; renderAvis(); renderAdminList(); })
+    .catch(() => {});
+
+  // ---------- Panel admin (Ctrl+Shift+A ou 7 clics sur le © du footer) ----------
+  // Code secret vérifié par empreinte SHA-256 (le code n'apparaît jamais dans la page).
+  // Pour changer le code : ouvre la console (F12) et tape :
+  //   crypto.subtle.digest("SHA-256", new TextEncoder().encode("TON_NOUVEAU_CODE")).then(b=>console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")))
+  // puis remplace la valeur de ADMIN_HASH ci-dessous.
+  const ADMIN_HASH = "306622fef75a64fe85b7c2d6b507a32b7aa495cfad8a5cf4fc0c18770b6be249";
+
+  const adminGate = document.getElementById("adminGate");
+  const adminPanel = document.getElementById("adminPanel");
+  const adminCode = document.getElementById("adminCode");
+  const gateStatus = document.getElementById("gateStatus");
+  const adminStatus = document.getElementById("adminStatus");
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+    return [...new Uint8Array(buf)].map((x) => x.toString(16).padStart(2, "0")).join("");
+  }
+
+  function openGate() {
+    adminGate.classList.add("open");
+    adminCode.value = "";
+    gateStatus.textContent = "";
+    setTimeout(() => adminCode.focus(), 50);
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.shiftKey && e.code === "KeyA") {
+      e.preventDefault();
+      openGate();
+    }
+  });
+
+  // Fallback mobile : 7 clics rapides sur le © du footer
+  const footerEl = document.querySelector("footer");
+  let taps = 0, tapTimer = null;
+  if (footerEl) {
+    footerEl.addEventListener("click", () => {
+      taps++;
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { taps = 0; }, 1600);
+      if (taps >= 7) { taps = 0; openGate(); }
+    });
+  }
+
+  document.getElementById("adminGateClose").addEventListener("click", () => adminGate.classList.remove("open"));
+
+  async function tryEnter() {
+    const h = await sha256(adminCode.value.trim());
+    if (h === ADMIN_HASH) {
+      adminGate.classList.remove("open");
+      adminPanel.classList.add("open");
+      loadGhCfg();
+      renderAdminList();
+      sfx.success();
+    } else {
+      gateStatus.textContent = "Code incorrect.";
+      gateStatus.classList.add("err");
+    }
+  }
+  document.getElementById("adminEnter").addEventListener("click", tryEnter);
+  adminCode.addEventListener("keydown", (e) => { if (e.key === "Enter") tryEnter(); });
+
+  document.getElementById("adminClose").addEventListener("click", () => adminPanel.classList.remove("open"));
+
+  // -- Liste des avis dans le panel --
+  function renderAdminList() {
+    const list = document.getElementById("aList");
+    if (!list) return;
+    list.innerHTML = "";
+    if (!avisData.length) {
+      list.innerHTML = '<div class="adminRow" style="justify-content:center; color:rgba(238,242,255,.5);">Aucun avis pour l\'instant</div>';
+      return;
+    }
+    avisData.forEach((a, i) => {
+      const row = document.createElement("div");
+      row.className = "adminRow";
+      const span = document.createElement("span");
+      span.textContent = `${starsTxt(a.note)} ${a.pseudo} — ${(a.texte || "").slice(0, 48)}${(a.texte || "").length > 48 ? "…" : ""}`;
+      const del = document.createElement("button");
+      del.className = "del";
+      del.type = "button";
+      del.textContent = "Supprimer";
+      del.addEventListener("click", () => {
+        avisData.splice(i, 1);
+        renderAvis();
+        renderAdminList();
+        setStatus("Avis retiré de la liste — pense à publier.", false);
+      });
+      row.append(span, del);
+      list.appendChild(row);
+    });
+  }
+
+  function setStatus(msg, isErr) {
+    adminStatus.textContent = msg;
+    adminStatus.classList.toggle("err", !!isErr);
+  }
+
+  document.getElementById("aAdd").addEventListener("click", () => {
+    const pseudo = document.getElementById("aPseudo").value.trim();
+    const texte = document.getElementById("aTexte").value.trim();
+    if (!pseudo || !texte) { setStatus("Pseudo et texte obligatoires.", true); return; }
+    avisData.unshift({
+      pseudo,
+      note: parseInt(document.getElementById("aNote").value, 10),
+      chaine: document.getElementById("aChaine").value.trim(),
+      type: document.getElementById("aType").value.trim(),
+      texte,
+      date: new Date().toISOString().slice(0, 10)
+    });
+    document.getElementById("aPseudo").value = "";
+    document.getElementById("aChaine").value = "";
+    document.getElementById("aType").value = "";
+    document.getElementById("aTexte").value = "";
+    renderAvis();
+    renderAdminList();
+    setStatus("Avis ajouté à la liste — clique « Publier » pour le mettre en ligne.", false);
+  });
+
+  // -- Config GitHub (persistée dans ce navigateur uniquement) --
+  const ghFields = ["ghOwner", "ghRepo", "ghBranch", "ghToken"];
+  function loadGhCfg() {
+    try {
+      const cfg = JSON.parse(localStorage.getItem("tz_gh") || "{}");
+      ghFields.forEach((id) => { if (cfg[id]) document.getElementById(id).value = cfg[id]; });
+    } catch (e) {}
+  }
+  function saveGhCfg() {
+    const cfg = {};
+    ghFields.forEach((id) => { cfg[id] = document.getElementById(id).value.trim(); });
+    try { localStorage.setItem("tz_gh", JSON.stringify(cfg)); } catch (e) {}
+    return cfg;
+  }
+
+  // -- Publication : commit avis.json via l'API GitHub --
+  document.getElementById("aPublish").addEventListener("click", async () => {
+    const cfg = saveGhCfg();
+    if (!cfg.ghOwner || !cfg.ghRepo || !cfg.ghToken) {
+      setStatus("Remplis utilisateur, repo et token GitHub.", true);
+      return;
+    }
+    const branch = cfg.ghBranch || "main";
+    const api = `https://api.github.com/repos/${cfg.ghOwner}/${cfg.ghRepo}/contents/avis.json`;
+    const headers = {
+      "Authorization": "Bearer " + cfg.ghToken,
+      "Accept": "application/vnd.github+json"
+    };
+    setStatus("Publication en cours…", false);
+    try {
+      // Récupère le SHA actuel du fichier (nécessaire pour la mise à jour)
+      let sha = null;
+      const getRes = await fetch(`${api}?ref=${branch}&t=${Date.now()}`, { headers });
+      if (getRes.ok) sha = (await getRes.json()).sha;
+
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(avisData, null, 2))));
+      const body = { message: "Mise à jour des avis (panel admin)", content, branch };
+      if (sha) body.sha = sha;
+
+      const putRes = await fetch(api, { method: "PUT", headers, body: JSON.stringify(body) });
+      if (putRes.ok) {
+        setStatus("✅ Publié ! Le site se met à jour dans ~1 minute (déploiement GitHub Pages).", false);
+        sfx.success();
+      } else {
+        const err = await putRes.json().catch(() => ({}));
+        setStatus("Erreur GitHub : " + (err.message || putRes.status) + " — vérifie le token et le repo.", true);
+      }
+    } catch (e) {
+      setStatus("Erreur réseau pendant la publication.", true);
+    }
+  });
+
+  // -- Fallback : copier le JSON pour le coller à la main dans avis.json --
+  document.getElementById("aCopy").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(avisData, null, 2));
+      setStatus("JSON copié — colle-le dans avis.json sur GitHub.", false);
+    } catch (e) {
+      setStatus("Copie impossible — sélectionne le JSON dans la console (F12).", true);
+      console.log(JSON.stringify(avisData, null, 2));
+    }
+  });
 
   // ---------- Révélations au scroll (avec stagger) ----------
   const io = new IntersectionObserver((entries) => {
