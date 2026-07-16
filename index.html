@@ -99,16 +99,17 @@ body::before{
 a{ color:inherit; text-decoration:none; }
 .wrap{ width:min(var(--max), calc(100% - 32px)); margin:0 auto; }
 
-/* ---------- BARRE DE PROGRESSION DE SCROLL ---------- */
+/* ---------- BARRE DE PROGRESSION DE SCROLL (en bas) ---------- */
 .scrollProgress{
-  position:fixed; top:0; left:0; right:0;
-  height:3px; z-index:1000;
+  position:fixed; bottom:0; left:0; right:0;
+  height:4px; z-index:1000;
   pointer-events:none;
+  background: rgba(255,255,255,.04);
 }
 .scrollProgress span{
   display:block; height:100%; width:0%;
   background: linear-gradient(90deg, var(--accent), var(--accent2));
-  box-shadow: 0 0 12px rgba(255,30,60,.6);
+  box-shadow: 0 0 14px rgba(255,30,60,.7);
   border-radius:0 99px 99px 0;
 }
 
@@ -248,13 +249,14 @@ nav a.active{
 @media (max-width: 860px){
   header .wrap{
     display:grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     align-items:center;
     gap:6px;
     padding:10px 0;
   }
   .brand{ grid-column:1; grid-row:1; justify-content:flex-start; }
-  .headerCta{ grid-column:2; grid-row:1; height:42px; padding:0 16px; font-size:13.5px; }
+  .soundToggle{ grid-column:2; grid-row:1; width:42px; height:42px; }
+  .headerCta{ grid-column:3; grid-row:1; height:42px; padding:0 16px; font-size:13.5px; }
   nav{
     grid-column:1 / -1; grid-row:2;
     justify-content:flex-start; flex-wrap:nowrap;
@@ -550,6 +552,60 @@ li{ margin-bottom:8px; color:var(--muted); }
   font-size:12.5px; color: rgba(238,242,255,.6);
 }
 
+/* ---------- OPTIONS À COCHER (payantes) ---------- */
+.optCheck{
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 15px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+  cursor:pointer;
+  transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--spring);
+  margin-bottom:0;
+}
+.optCheck:hover{ background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18); }
+.optCheck input{
+  position:absolute; opacity:0; width:1px; height:1px;
+}
+.optCheck .box{
+  flex:0 0 22px; width:22px; height:22px;
+  border-radius:7px; margin-top:1px;
+  border:1px solid rgba(255,255,255,.22);
+  background: rgba(255,255,255,.05);
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:900; color:transparent;
+  transition: background .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease), transform .2s var(--spring);
+}
+.optCheck input:checked ~ .box{
+  color:#fff;
+  border-color: rgba(255,255,255,.35);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 8px 20px rgba(255,30,60,.3), inset 0 1px 0 rgba(255,255,255,.4);
+  transform: scale(1.05);
+}
+.optCheck input:checked ~ .optTxt b{ color:var(--accent2); }
+.optCheck input:focus-visible ~ .box{
+  box-shadow: 0 0 0 4px rgba(255,30,60,.18);
+}
+.optCheck .optTxt{ font-size:14px; color:var(--text); line-height:1.45; }
+.optCheck .optTxt b{ white-space:nowrap; transition: color .2s var(--ease); }
+.optCheck .optTxt small{ display:block; margin-top:3px; color:var(--muted); font-size:12.5px; font-weight:400; }
+
+/* ---------- BOUTON SON ---------- */
+.soundToggle{
+  flex:0 0 auto;
+  width:44px; height:44px; border-radius:999px;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.05);
+  backdrop-filter: blur(10px);
+  font-size:16px; cursor:pointer;
+  transition: transform .22s var(--spring), background .2s var(--ease), border-color .2s var(--ease);
+}
+.soundToggle:hover{ transform: translateY(-2px); background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.26); }
+.soundToggle.off{ opacity:.6; }
+
 /* ---------- GARANTIES ---------- */
 .guaranteeRow{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:18px; }
 @media (max-width: 900px){ .guaranteeRow{ grid-template-columns:repeat(2, 1fr); } }
@@ -793,6 +849,17 @@ select.enhanced-native{
   outline:none;
 }
 .customSelect.open .csBtn::after{ transform: translateY(-30%) rotate(-135deg); }
+.csBtn.err{
+  border-color: rgba(255,30,60,.8) !important;
+  box-shadow: 0 0 0 4px rgba(255,30,60,.18) !important;
+  animation: shakeX .4s var(--ease);
+}
+@keyframes shakeX{
+  0%,100%{ transform:translateX(0); }
+  25%{ transform:translateX(-6px); }
+  50%{ transform:translateX(5px); }
+  75%{ transform:translateX(-3px); }
+}
 
 .csList{
   position:absolute; left:0; right:0; top:calc(100% + 8px);
@@ -858,6 +925,29 @@ select.enhanced-native{
   font-family:var(--font-display);
   font-size:32px; font-weight:700; letter-spacing:-.4px; line-height:1.05; margin-bottom:8px;
   transition: transform .3s var(--spring);
+}
+.estimationBox .estimateValue .estOld{
+  display:inline-block;
+  font-size:.55em; font-weight:500;
+  color: rgba(238,242,255,.45);
+  text-decoration: line-through;
+  margin-right:10px;
+  vertical-align:2px;
+}
+.estimationBox .estimateValue .estPromo{
+  display:inline-block;
+  margin-left:10px; padding:4px 9px;
+  border-radius:999px; vertical-align:6px;
+  font-family:var(--font-body);
+  font-size:11.5px; font-weight:800; letter-spacing:.02em;
+  color:#04220f;
+  background: linear-gradient(135deg, #7CFFB2, #39e07f);
+  box-shadow: 0 6px 16px rgba(57,224,127,.3);
+}
+.estimateSavings{
+  margin-top:8px;
+  font-size:13px; font-weight:700;
+  color:#7CFFB2;
 }
 .estimationBox .estimateValue.bump{ transform: scale(1.08); }
 .estimationBox .estimateMeta{ color: var(--muted); font-size:14px; line-height:1.5; }
@@ -953,7 +1043,195 @@ button.primary:active{ transform: scale(.98); }
 .successPanel p{ max-width:420px; margin:0 auto 6px; }
 .successPanel .btnRow{ justify-content:center; margin-top:20px; }
 
+/* Motion design : entrée séquencée façon After Effects */
+.successPanel .checkWrap{
+  animation: popIn .55s var(--spring) both;
+}
+.successPanel .successTitle{
+  animation: riseIn .55s var(--spring) .75s both;
+}
+.successPanel p{
+  animation: riseIn .5s var(--ease) .95s both;
+}
+.successPanel .btnRow{
+  animation: riseIn .5s var(--spring) 1.15s both;
+}
+@keyframes popIn{
+  0%{ opacity:0; transform: scale(.3) rotate(-12deg); }
+  70%{ transform: scale(1.08) rotate(2deg); }
+  100%{ opacity:1; transform: scale(1) rotate(0); }
+}
+@keyframes riseIn{
+  from{ opacity:0; transform: translateY(22px) scale(.97); }
+  to{ opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* L'avion en papier qui décolle avec la demande */
+.planeFly{
+  position:absolute;
+  left:-60px; bottom:18%;
+  font-size:34px;
+  pointer-events:none;
+  opacity:0;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.4));
+  animation: planeFly 1.5s cubic-bezier(.3,.6,.4,1) .25s both;
+}
+@keyframes planeFly{
+  0%{ opacity:0; transform: translate(0, 30px) rotate(18deg) scale(.7); }
+  12%{ opacity:1; }
+  45%{ transform: translate(42vw, -60px) rotate(-6deg) scale(1); }
+  80%{ opacity:1; }
+  100%{ opacity:0; transform: translate(min(88vw, 900px), -150px) rotate(-14deg) scale(.85); }
+}
+
 footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,242,255,.55); }
+
+/* ---------- CHIFFRES (compteurs animés) ---------- */
+.statsRow{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:14px; }
+@media (max-width: 760px){ .statsRow{ grid-template-columns:1fr; } }
+.statCard{ text-align:center; padding:26px 16px; }
+.statNum{
+  font-family:var(--font-display); font-weight:700;
+  font-size:42px; letter-spacing:-1.5px; line-height:1;
+  background: linear-gradient(120deg, var(--accent2), #ffb3c2);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.statCard span{ display:block; margin-top:10px; color:var(--muted); font-size:13.5px; }
+
+/* ---------- BARRE DE PROGRESSION DU FORMULAIRE ---------- */
+.formProgress{ display:grid; gap:8px; }
+.formProgress .fpTop{
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:12.5px; color:rgba(238,242,255,.65);
+}
+.formProgress .fpTop b{ color:var(--text); font-size:13px; }
+.formProgress .fpTrack{
+  height:6px; border-radius:99px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.3);
+}
+.formProgress .fpFill{
+  height:100%; width:0%;
+  border-radius:99px;
+  background:linear-gradient(90deg, var(--accent), var(--accent2));
+  box-shadow: 0 0 10px rgba(255,30,60,.5);
+  transition: width .35s var(--ease);
+}
+
+/* ---------- BONUS OFFERT (réciprocité) ---------- */
+.giftBox{
+  display:flex; gap:12px; align-items:flex-start;
+  margin-top:18px; padding:15px 16px;
+  border-radius:16px;
+  border:1px solid rgba(124,255,178,.28);
+  background: linear-gradient(150deg, rgba(57,224,127,.12), rgba(255,255,255,.03) 65%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+}
+.giftBox .giftIcon{
+  width:34px; height:34px; flex:0 0 34px;
+  border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px;
+  background: linear-gradient(135deg, rgba(57,224,127,.3), rgba(124,255,178,.12));
+  border:1px solid rgba(124,255,178,.3);
+}
+.giftBox b{ display:block; font-size:13.5px; margin-bottom:3px; color:#BFFFD9; }
+.giftBox span{ color:var(--muted); font-size:12.5px; line-height:1.5; }
+
+/* ---------- MINI QUIZ ---------- */
+.quiz{ display:grid; gap:18px; margin-top:16px; }
+.quizDots{ display:flex; gap:8px; }
+.quizDots i{
+  width:28px; height:5px; border-radius:99px;
+  background:rgba(255,255,255,.12);
+  transition: background .3s var(--ease);
+}
+.quizDots i.on{ background:linear-gradient(90deg, var(--accent), var(--accent2)); }
+.quizQ{
+  font-family:var(--font-display);
+  font-size:20px; letter-spacing:-.3px;
+}
+.quizOpts{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+@media (max-width: 560px){ .quizOpts{ grid-template-columns:1fr; } }
+.quizOpt{
+  position:relative; overflow:hidden;
+  padding:16px 15px; border-radius:14px; text-align:left;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
+  color:var(--text); font-weight:700; font-size:14.5px; cursor:pointer;
+  font-family:var(--font-body);
+  transition: transform .2s var(--spring), background .2s var(--ease), border-color .2s var(--ease);
+}
+.quizOpt small{
+  display:block; margin-top:4px;
+  font-weight:400; color:var(--muted); font-size:12.5px;
+}
+.quizOpt:hover{
+  transform:translateY(-2px);
+  background:rgba(255,30,60,.14);
+  border-color:rgba(255,92,122,.45);
+}
+.quizOpt:active{ transform:scale(.97); }
+.quizSkip{
+  background:none; border:none;
+  color:rgba(238,242,255,.55); font-size:13px;
+  cursor:pointer; text-decoration:underline;
+  padding:4px 0; justify-self:start;
+  font-family:var(--font-body);
+  transition: color .2s var(--ease);
+}
+.quizSkip:hover{ color:#fff; }
+
+/* ---------- À QUI ÇA S'ADRESSE ---------- */
+.fitRow{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width: 760px){ .fitRow{ grid-template-columns:1fr; } }
+.fitCard{ padding:24px; }
+.fitCard h3{
+  font-family:var(--font-display);
+  font-size:17px; margin-bottom:16px;
+}
+.fitList{ list-style:none; padding:0; margin:0; }
+.fitList li{
+  display:flex; gap:11px; align-items:flex-start;
+  font-size:14px; margin-bottom:11px;
+}
+.fitList li:last-child{ margin-bottom:0; }
+.fitList li::before{
+  content:"✓";
+  flex:0 0 20px; width:20px; height:20px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:7px;
+  font-size:11px; font-weight:900; color:#04220f;
+  background:linear-gradient(135deg, #7CFFB2, #39e07f);
+  box-shadow: 0 6px 16px rgba(57,224,127,.25);
+}
+.fitCard.no .fitList li::before{
+  content:"✕"; color:#dfe4f5;
+  background:linear-gradient(135deg, #4a5169, #333a52);
+  box-shadow:none;
+}
+
+/* ---------- RÉCAP AVANT ENVOI ---------- */
+.recapPanel{ display:none; margin-top:16px; }
+.recapPanel.on{ display:block; }
+.recapPanel > h3{
+  font-family:var(--font-display);
+  font-size:18px; letter-spacing:-.2px;
+}
+.recapList{ list-style:none; padding:0; margin:14px 0 16px; }
+.recapList li{
+  display:flex; justify-content:space-between; gap:14px;
+  padding:11px 2px; margin:0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  font-size:14px; color:var(--muted);
+}
+.recapList li b{
+  color:var(--text); text-align:right;
+  max-width:60%; word-break:break-word;
+}
 
 /* ---------- BOUTON COPIER EMAIL ---------- */
 .copyBtn{
@@ -1053,7 +1331,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   background:#0b1024; flex:0 0 66px;
 }
 
-#avis{ display:none; }
+/* Section avis visible : les chiffres comptent à l'écran, les avis s'ajouteront ici */
 
 /* ---------- ACCESSIBILITÉ & PERF ---------- */
 @media (hover:none), (pointer:coarse){
@@ -1064,6 +1342,18 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   *, *::before, *::after{ animation:none !important; transition:none !important; }
   .reveal, .reveal .stagger{ opacity:1 !important; transform:none !important; }
   .aurora span{ animation:none; }
+
+  /* Exception : l'écran de succès garde sa séquence (courte, jouée une fois) */
+  .successPanel .checkmark{ animation: checkFill .4s ease-in-out .4s forwards, checkScale .3s ease-in-out .9s both !important; }
+  .successPanel .checkmark-circle{ animation: checkStroke .6s cubic-bezier(.65,0,.45,1) forwards !important; }
+  .successPanel .checkmark-check{ animation: checkStroke .3s cubic-bezier(.65,0,.45,1) .7s forwards !important; }
+  .successPanel .checkWrap{ animation: popIn .55s var(--spring) both !important; }
+  .successPanel .checkWrap::before{ animation: ringPulse 1.5s ease-out .55s 2 !important; }
+  .successPanel .checkWrap::after{ animation: ringPulse 1.5s ease-out .95s 2 !important; }
+  .successPanel .successTitle{ animation: riseIn .55s var(--spring) .75s both !important; }
+  .successPanel p{ animation: riseIn .5s var(--ease) .95s both !important; }
+  .successPanel .btnRow{ animation: riseIn .5s var(--spring) 1.15s both !important; }
+  .successPanel .planeFly{ animation: planeFly 1.5s cubic-bezier(.3,.6,.4,1) .25s both !important; }
 }
 </style>
 </head>
@@ -1093,9 +1383,11 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
       <a href="#livraison">Livraison</a>
       <a href="#formation">Formation</a>
       <a href="#extraits">Extraits</a>
+      <a href="#avis">Avis</a>
       <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
     </nav>
+    <button class="soundToggle" id="soundToggle" type="button" title="Activer / couper les sons" aria-label="Activer ou couper les sons du site">🔊</button>
     <button class="headerCta magnetic" id="openOrder" type="button" title="Commander" aria-label="Rejoindre la liste d'attente">
       <svg class="cartIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="9" cy="20.5" r="1.6"/>
@@ -1116,13 +1408,12 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
       <div class="heroBlob" aria-hidden="true"></div>
       <span class="sweep" aria-hidden="true"></span>
       <h1>Montage vidéo —<br>formats longs <span class="liquidWord">YouTube</span></h1>
-      <p>Des vidéos que tes viewers regardent <strong style="color:var(--text);">jusqu'au bout</strong>. Tu m'envoies tes rushs, je m'occupe du rythme, du storytelling et du sound design — toi, tu te concentres sur ton contenu.</p>
+      <p>Tu m'envoies tes rushs, je te rends une vidéo que tes viewers regardent <strong style="color:var(--text);">jusqu'au bout</strong>.</p>
 
       <div class="badges">
-        <span class="badge"><span class="dot"></span>À partir de 20 €</span>
-        <span class="badge"><span class="dot"></span>Jusqu’à 40 min</span>
-        <span class="badge"><span class="dot"></span>Sound design inclus</span>
-        <span class="badge"><span class="dot"></span>1 révision incluse</span>
+        <span class="badge" style="border-color:rgba(124,255,178,.35); color:#BFFFD9;"><span class="dot" style="background:linear-gradient(135deg,#7CFFB2,#39e07f); box-shadow:0 0 10px rgba(57,224,127,.7);"></span>-25 % sur ta 1ère commande</span>
+        <span class="badge"><span class="dot"></span>Dès 15 €</span>
+        <span class="badge"><span class="dot"></span>Sound design + 1 révision inclus</span>
         <span class="badge"><span class="dot"></span>Formé par Editing 360</span>
       </div>
 
@@ -1130,7 +1421,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
         <button class="btn primary magnetic" id="openOrder2" type="button">Commander mon montage</button>
         <a class="btn magnetic" href="#extraits">Voir mon travail</a>
       </div>
-      <div class="ctaNote"><span class="dot"></span>Demande gratuite et sans engagement • Prix confirmé avant tout paiement</div>
+      <div class="ctaNote"><span class="dot"></span>Gratuit, sans engagement • Prix confirmé avant paiement</div>
     </div>
 
     <!-- Vidéo de présentation : cliquable, contrôles YouTube actifs -->
@@ -1146,8 +1437,8 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
       <div class="heroVideoMeta">
         <span class="playDot" aria-hidden="true">▶</span>
         <div>
-          <b>Ma vidéo de présentation</b>
-          <span>Ce que je fais, comment je bosse — clique pour lancer.</span>
+          <b>Ma présentation en vidéo</b>
+          <span>Clique pour lancer.</span>
         </div>
       </div>
     </div>
@@ -1173,13 +1464,10 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   <h2>Services</h2>
   <div class="card glass">
     <ul>
-      <li>Montage vidéos YouTube longues</li>
-      <li>Tous types de contenus</li>
-      <li>Cuts propres et rythme fluide</li>
-      <li>Sound design inclus</li>
-      <li>Durée max standard : 40 minutes</li>
+      <li>Montage YouTube longs formats (6 à 40 min), tous contenus</li>
+      <li>Cuts propres, rythme fluide, sound design inclus</li>
     </ul>
-    <p style="margin-top:10px;"><strong>Non proposé :</strong> shorts, TikTok, Reels.</p>
+    <p style="margin-top:10px;"><strong>Non proposé :</strong> shorts, TikTok, Reels, miniatures.</p>
   </div>
 </section>
 
@@ -1189,17 +1477,39 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     <div class="card glass stepCard stagger">
       <div class="stepNum">1</div>
       <h3>Tu m'envoies tes rushs</h3>
-      <p>Tu remplis le formulaire (2 minutes) avec ton lien Drive ou WeTransfer. Je te réponds par email avec le prix exact et le délai.</p>
+      <p>Formulaire en 2 min → je te réponds avec le prix exact et le délai.</p>
     </div>
     <div class="card glass stepCard stagger">
       <div class="stepNum">2</div>
       <h3>Je monte ta vidéo</h3>
-      <p>Cuts propres, rythme travaillé, sound design. Pendant ce temps, tu prépares ta prochaine vidéo tranquillement.</p>
+      <p>Cuts, rythme, sound design — pendant que tu prépares la suivante.</p>
     </div>
     <div class="card glass stepCard stagger">
       <div class="stepNum">3</div>
       <h3>Tu valides, tu publies</h3>
-      <p>Tu fais tes retours au timecode sur Frame.io, j'ajuste, et tu reçois ton MP4 prêt à mettre en ligne.</p>
+      <p>Retours au timecode sur Frame.io, puis ton MP4 prêt à publier.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pourqui" class="reveal">
+  <h2>C'est pour toi ?</h2>
+  <div class="fitRow">
+    <div class="card glass fitCard stagger">
+      <h3>On va bien s'entendre si…</h3>
+      <ul class="fitList">
+        <li>Tu fais des vidéos longues (6–40 min)</li>
+        <li>Tu veux filmer plus, monter moins</li>
+        <li>Tu vises la rétention, pas juste des cuts</li>
+      </ul>
+    </div>
+    <div class="card glass fitCard no stagger">
+      <h3>Passe ton chemin si…</h3>
+      <ul class="fitList">
+        <li>Tu veux des shorts ou des miniatures</li>
+        <li>Il te faut une livraison en 24h</li>
+        <li>Tu veux le prix le plus bas, peu importe la qualité</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -1269,45 +1579,42 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
       <div class="gIcon">✓</div>
       <div>
         <b>1 révision incluse</b>
-        <span>Et jusqu'à +5 en option pour un résultat exactement comme tu veux.</span>
+        <span>Jusqu'à +5 en option.</span>
       </div>
     </div>
     <div class="guarantee stagger">
       <div class="gIcon">€</div>
       <div>
         <b>Prix confirmé avant paiement</b>
-        <span>Aucune surprise : devis exact validé par email. Facture PayPal payable par carte bancaire.</span>
+        <span>Devis exact par email, zéro surprise.</span>
       </div>
     </div>
     <div class="guarantee stagger">
       <div class="gIcon">⏱</div>
       <div>
         <b>Retard = remboursement partiel</b>
-        <span>Si je dépasse le délai annoncé, je te rembourse une partie.</span>
+        <span>Le délai annoncé est tenu, sinon je rembourse une partie.</span>
       </div>
     </div>
     <div class="guarantee stagger">
       <div class="gIcon">💬</div>
       <div>
         <b>Retours simples</b>
-        <span>Tu commentes directement au timecode sur Frame.io, sans prise de tête.</span>
+        <span>Un commentaire au timecode = une modif.</span>
       </div>
     </div>
   </div>
 
-  <p style="margin-top:14px">Paiement avant livraison via facture PayPal — <strong>payable par simple carte bancaire, aucun compte PayPal nécessaire</strong> • Shorts non proposés</p>
+  <p style="margin-top:14px">🎉 <strong style="color:#7CFFB2;">-25 % sur ta première commande</strong> • Facture PayPal payable par carte bancaire, <strong>sans compte PayPal</strong></p>
 </section>
 
 <section id="options" class="reveal">
   <h2>Options</h2>
   <div class="card glass">
-    <p><strong>Par défaut :</strong> 1 révision incluse.</p>
-    <p><strong>Révisions supplémentaires :</strong> +7 € par révision (max +5).</p>
     <ul>
-      <li>+2 révisions : <strong>+14 €</strong></li>
-      <li>+3 révisions : <strong>+21 €</strong></li>
-      <li>+4 révisions : <strong>+28 €</strong></li>
-      <li>+5 révisions : <strong>+35 €</strong></li>
+      <li><strong>Révisions supplémentaires :</strong> +7 € / révision (max +5)</li>
+      <li><strong>Sous-titres incrustés :</strong> +2,99 €</li>
+      <li><strong>Retrait du crédit « Montage : TAYZEN » en description :</strong> +0,99 €</li>
     </ul>
   </div>
 </section>
@@ -1341,7 +1648,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
 
 <section id="extraits" class="reveal">
   <h2>Extraits</h2>
-  <p>La preuve en images : regarde le rythme, les cuts et le sound design. Lecture automatique en boucle (non cliquable).</p>
+  <p>La preuve en images — lecture auto en boucle.</p>
 
   <div class="videoGrid" style="margin-top:14px;">
 
@@ -1485,30 +1792,63 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
 </section>
 
 <section id="avis" class="reveal">
-  <h2>Avis</h2>
+  <h2>Chiffres & avis</h2>
+
+  <!-- 📝 TAYZEN : mets à jour data-count au fil des commandes (vidéos montées / minutes de rushs) -->
+  <div class="statsRow">
+    <div class="card glass statCard stagger">
+      <div class="statNum" data-count="2">0</div>
+      <span>vidéos livrées</span>
+    </div>
+    <div class="card glass statCard stagger">
+      <div class="statNum" data-count="50" data-suffix=" min">0</div>
+      <span>de rushs transformés</span>
+    </div>
+    <div class="card glass statCard stagger">
+      <div class="statNum" data-count="100" data-suffix="%">0</div>
+      <span>de commandes livrées</span>
+    </div>
+  </div>
+
   <div class="card glass">
-    <p>Vous donnez votre avis via un <strong>lien</strong> qui est donné à la fin de la commande.</p>
-    <p style="margin:0;">Les avis seront ajoutés ici au fur et à mesure.</p>
+    <p style="margin:0;">Les avis arrivent ici au fil des commandes — <strong style="color:var(--text);">avec un lien vers ta chaîne</strong>, visible par tous les visiteurs.</p>
   </div>
 </section>
 
 <section id="faq" class="reveal">
   <h2>FAQ</h2>
   <div class="card glass">
-    <p><strong>Shorts ?</strong><br>Non — je suis spécialisé à 100 % dans les formats longs. C'est ce qui me permet d'être vraiment bon sur le rythme et la rétention.</p>
-    <p><strong>Durée maximale ?</strong><br>Jusqu’à 40 minutes en standard. Au-delà, contacte-moi : je prends les demandes spéciales au cas par cas.</p>
-    <p><strong>Révisions ?</strong><br>1 incluse dans chaque montage. Et grâce à la règle « 1 commentaire = 1 modification », tes retours sont appliqués précisément. Besoin de plus ? +7 € / révision (max +5).</p>
-    <p><strong>Comment je fais mes retours ?</strong><br>Via Frame.io : tu cliques sur le moment exact de la vidéo et tu écris ton commentaire. Simple, rapide, zéro prise de tête.</p>
-    <p><strong>Délais ?</strong><br>3–7 jours (projets courts) • 7–11 jours (30–40 min). Le délai exact est annoncé par email avant tout paiement.</p>
-    <p><strong>Paiement ?</strong><br>Je t'envoie une facture PayPal, <strong>payable par simple carte bancaire — pas besoin d'avoir un compte PayPal</strong>. Paiement sécurisé, 100 % avant livraison, et toujours après validation du devis exact par email.</p>
-    <p><strong>Retard ?</strong><br>Si je dépasse le délai annoncé, remboursement partiel. C'est ma garantie, noir sur blanc.</p>
-    <p><strong>Miniatures ?</strong><br>Non — je préfère mettre 100 % de mon énergie dans le montage.</p>
+    <p><strong>Shorts ?</strong><br>Non — 100 % spécialisé formats longs, c'est ma force.</p>
+    <p><strong>Durée max ?</strong><br>40 min en standard. Au-delà : demande spéciale.</p>
+    <p><strong>Révisions ?</strong><br>1 incluse (1 commentaire = 1 modif). Plus : +7 € / révision, max +5.</p>
+    <p><strong>Les retours ?</strong><br>Sur Frame.io : tu commentes au timecode, j'ajuste.</p>
+    <p><strong>Délais ?</strong><br>3–7 jours (courts) • 7–11 jours (30–40 min). Annoncé avant paiement.</p>
+    <p><strong>Paiement ?</strong><br>Facture PayPal, <strong>payable par carte bancaire sans compte PayPal</strong>. 100 % avant livraison, après validation du devis.</p>
+    <p><strong>Retard ?</strong><br>Remboursement partiel, garanti.</p>
+    <p><strong>Une réduc pour commencer ?</strong><br><strong style="color:#7CFFB2;">-25 % sur ta 1ère commande</strong> — coche la case du formulaire.</p>
+    <p><strong>Miniatures ?</strong><br>Non, 100 % montage.</p>
     <p style="margin-top:18px; padding-top:16px; border-top:1px solid rgba(255,255,255,.08);">
-      <strong style="color:var(--text);">Une autre question ?</strong> Écris-moi à tayzenprofr@gmail.com — ou envoie directement ta demande, elle est gratuite et sans engagement.
+      <strong style="color:var(--text);">Une autre question ?</strong> Pose-la ici — réponse par email, et les meilleures rejoignent la FAQ.
     </p>
-    <div class="btnRow" style="margin-top:14px;">
-      <button class="btn primary magnetic" id="openOrderFaq" type="button">Envoyer ma demande</button>
-    </div>
+    <form id="faqForm" action="https://formspree.io/f/mbdrgyqp" method="POST" style="margin-top:14px; gap:14px;">
+      <input type="hidden" name="source" value="Question FAQ — Portfolio TAYZEN">
+      <input type="hidden" name="_subject" value="❓ Nouvelle question FAQ — TAYZEN">
+      <div class="twoCols">
+        <div>
+          <label for="faqEmail">Ton email (pour la réponse)</label>
+          <input id="faqEmail" type="email" name="email" placeholder="ton@email.com" required>
+        </div>
+        <div>
+          <label for="faqQuestion">Ta question</label>
+          <input id="faqQuestion" type="text" name="question" placeholder="Écris ta question ici…" required>
+        </div>
+      </div>
+      <div class="btnRow" style="margin-top:0;">
+        <button class="btn primary" type="submit">Envoyer ma question</button>
+        <button class="btn" id="openOrderFaq" type="button">Ou envoyer ma demande directement</button>
+      </div>
+    </form>
+    <p id="faqThanks" style="display:none; margin:14px 0 0; color:#7CFFB2; font-weight:700;">Question envoyée ✓ — je te réponds par email !</p>
   </div>
 </section>
 
@@ -1518,12 +1858,12 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     <div class="ctaBlob" aria-hidden="true"></div>
     <span class="sweep" aria-hidden="true"></span>
     <h2>Prêt à faire décoller tes vidéos ?</h2>
-    <p>Pendant que tu filmes ta prochaine vidéo, je monte celle-ci. Envoie ta demande maintenant — elle est <strong style="color:var(--text);">gratuite et sans engagement</strong>, et tu reçois un devis exact par email.</p>
+    <p>Ta demande est <strong style="color:var(--text);">gratuite et sans engagement</strong> — tu reçois un devis exact par email.</p>
     <div class="btnRow">
       <button class="btn primary magnetic" id="openOrder3" type="button">Commander mon montage</button>
       <a class="btn magnetic" href="#extraits">Revoir les extraits</a>
     </div>
-    <div class="ctaNote" style="justify-content:center;"><span class="dot"></span>Disponibilité ouverte • À partir de 20 € • Prix confirmé avant tout paiement</div>
+    <div class="ctaNote" style="justify-content:center;"><span class="dot"></span>Dispo ouverte • 🎉 -25 % sur ta 1ère commande</div>
   </div>
 </section>
 
@@ -1547,7 +1887,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
           <div class="brandMark" aria-hidden="true"></div>
           <h2 id="orderTitle">Rejoindre la liste d'attente</h2>
         </div>
-        <p>Demande gratuite et sans engagement — je te réponds par email avec un devis exact avant tout paiement. Les rushs se partagent via Google Drive ou WeTransfer.</p>
+        <p>Gratuit et sans engagement — devis exact par email avant tout paiement.</p>
       </div>
       <button class="closeBtn" id="closeOrder" aria-label="Fermer">✕</button>
     </div>
@@ -1605,7 +1945,61 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
           <div class="formWrap">
             <h3>Formulaire de demande</h3>
 
-            <form id="orderForm" action="https://formspree.io/f/mbdrgyqp" method="POST">
+            <div class="giftBox">
+              <div class="giftIcon">🎁</div>
+              <div>
+                <b>Bonus offert avec chaque demande</b>
+                <span>Laisse ta chaîne : je regarde une vidéo et je te donne un avis rapide — <strong>même sans commande</strong>.</span>
+              </div>
+            </div>
+
+            <!-- Mini quiz : 3 questions rapides avant le formulaire -->
+            <div class="quiz" id="orderQuiz">
+              <div class="quizDots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+
+              <div class="quizStep" data-qstep="1">
+                <p class="quizQ">Quel type de vidéo tu veux faire monter ?</p>
+                <div class="quizOpts">
+                  <button type="button" class="quizOpt" data-type="Gaming">🎮 Gaming<small>Gameplay, let's play, best-of…</small></button>
+                  <button type="button" class="quizOpt" data-type="Storytelling">📖 Storytelling<small>Récit, documentaire, enquête…</small></button>
+                  <button type="button" class="quizOpt" data-type="Commentary">🎙️ Commentary<small>Réaction, analyse, débat…</small></button>
+                  <button type="button" class="quizOpt" data-type="Vlog">📹 Vlog<small>Lifestyle, voyage, quotidien…</small></button>
+                  <button type="button" class="quizOpt" data-type="__autre">✍️ Autre<small>Je précise moi-même</small></button>
+                </div>
+              </div>
+
+              <div class="quizStep" data-qstep="2" style="display:none;">
+                <p class="quizQ">Quelle durée finale tu vises ?</p>
+                <div class="quizOpts">
+                  <button type="button" class="quizOpt" data-duration="6-12">6–12 min<small>20–35 €</small></button>
+                  <button type="button" class="quizOpt" data-duration="12-20">12–20 min<small>40–60 €</small></button>
+                  <button type="button" class="quizOpt" data-duration="20-30">20–30 min<small>70–100 €</small></button>
+                  <button type="button" class="quizOpt" data-duration="40">40 min<small>110–150 €</small></button>
+                  <button type="button" class="quizOpt" data-duration="40+">+40 min<small>150 € + (demande spéciale)</small></button>
+                </div>
+              </div>
+
+              <div class="quizStep" data-qstep="3" style="display:none;">
+                <p class="quizQ">Tu as combien de rushs à m'envoyer ?</p>
+                <div class="quizOpts">
+                  <button type="button" class="quizOpt" data-rush="moins de 30 min">Moins de 30 min<small>+0 €</small></button>
+                  <button type="button" class="quizOpt" data-rush="30+ min">30 min et +<small>+5 €</small></button>
+                  <button type="button" class="quizOpt" data-rush="60+ min">1 heure et +<small>+10 €</small></button>
+                </div>
+              </div>
+
+              <button type="button" class="quizSkip" id="quizSkip">Passer le quiz et remplir le formulaire directement</button>
+            </div>
+
+            <form id="orderForm" action="https://formspree.io/f/mbdrgyqp" method="POST" novalidate>
+
+              <div class="formProgress" id="formProgress">
+                <div class="fpTop">
+                  <b>Ta demande</b>
+                  <span><span id="fpCount">0%</span> complété</span>
+                </div>
+                <div class="fpTrack"><div class="fpFill" id="fpFill"></div></div>
+              </div>
 
               <div class="fieldGroup">
                 <h3>Infos</h3>
@@ -1640,7 +2034,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
                 <div class="twoCols">
                   <div>
                     <label for="finalDuration">Durée finale attendue</label>
-                    <select id="finalDuration" name="duree_finale" required>
+                    <select id="finalDuration" name="duree_finale">
                       <option value="" selected disabled>Choisis une durée</option>
                       <option value="6-12">6–12 min</option>
                       <option value="12-20">12–20 min</option>
@@ -1652,17 +2046,13 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
 
                   <div>
                     <label for="rushDuration">Durée totale des rushs</label>
-                    <select id="rushDuration" name="duree_rushs" required>
+                    <select id="rushDuration" name="duree_rushs">
                       <option value="" selected disabled>Choisis la durée des rushs</option>
                       <option value="moins de 30 min" data-cost="0">Moins de 30 min (+0 €)</option>
                       <option value="30+ min" data-cost="5">30+ min (+5 €)</option>
                       <option value="60+ min" data-cost="10">60+ min (+10 €)</option>
                     </select>
                   </div>
-                </div>
-
-                <div class="hint">
-                  La durée des rushs sera vérifiée quand je recevrai les fichiers.
                 </div>
 
                 <div>
@@ -1673,6 +2063,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
                 <div>
                   <label for="youtubeChannel">Ta chaîne YouTube</label>
                   <input id="youtubeChannel" type="url" name="chaine_youtube" placeholder="Lien de ta chaîne YouTube (optionnel)">
+                  <div class="hint" style="margin-top:8px;">🎁 Le bonus avis rapide passe par ici.</div>
                 </div>
 
                 <div>
@@ -1697,42 +2088,67 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
                   <div class="hint" style="margin-top:8px;">Par défaut : 1 révision incluse.</div>
                 </div>
 
+                <label class="optCheck" for="optFirst" style="border-color:rgba(124,255,178,.3); background:linear-gradient(150deg, rgba(57,224,127,.10), rgba(255,255,255,.03) 65%);">
+                  <input type="checkbox" id="optFirst" checked>
+                  <span class="box">✓</span>
+                  <span class="optTxt">🎉 C'est ma première commande <b style="color:#7CFFB2;">-25 %</b><small>Remise de bienvenue — vérifiée au devis, joue franc jeu 😉</small></span>
+                </label>
+
+                <label class="optCheck" for="optSubs">
+                  <input type="checkbox" id="optSubs" data-cost="2.99">
+                  <span class="box">✓</span>
+                  <span class="optTxt">Sous-titres incrustés <b>+2,99 €</b><small>Boost de rétention et d'accessibilité.</small></span>
+                </label>
+
+                <label class="optCheck" for="optNoCredit">
+                  <input type="checkbox" id="optNoCredit" data-cost="0.99">
+                  <span class="box">✓</span>
+                  <span class="optTxt">Retirer le crédit « Montage : TAYZEN » <b>+0,99 €</b><small>Sinon, un petit crédit apparaît dans ta description.</small></span>
+                </label>
+
+                <!-- Champs cachés : Formspree reçoit toujours Oui/Non, même case décochée -->
+                <input type="hidden" name="sous_titres" id="sousTitresField" value="Non">
+                <input type="hidden" name="retrait_credit" id="retraitCreditField" value="Non — crédit « Montage : TAYZEN » en description">
+                <input type="hidden" name="premiere_commande" id="premiereCommandeField" value="Oui (-25 % sur le montage)">
+
                 <div class="estimationBox" id="priceEstimate">
                   <div class="kicker">
                     <b>Estimation</b>
                     <span class="pill">indicatif</span>
                   </div>
                   <div class="estimateValue">—</div>
+                  <div class="estimateSavings" id="estimateSavings"></div>
                   <div class="estimateMeta">Choisis une durée pour afficher une estimation.</div>
-                  <div class="estimateIncludes">Inclut : cuts, rythme, sound design, storytelling, export MP4 prêt à publier et 1 révision.</div>
+                  <div class="estimateIncludes">Inclut : cuts, rythme, sound design, export MP4 et 1 révision • Prix final confirmé par email.</div>
                 </div>
 
                 <div class="hint" id="revSummary">
                   Total révisions : <strong>1</strong> (1 incluse + 0 en option) • Option : <strong>+0 €</strong>
                 </div>
-
-                <div class="hint">
-                  <strong>Important :</strong> 1 commentaire = 1 modification.
-                </div>
-
-                <div class="hint">
-                  Le tarif affiché est une <strong>estimation</strong>. Le prix final est confirmé par email après vérification du projet et des rushs.
-                </div>
               </div>
 
               <input type="hidden" name="source" value="Portfolio TAYZEN">
               <input type="hidden" name="tarif_estime" id="tarif_estime" value="">
+              <input type="hidden" name="_subject" value="🎬 Nouvelle demande de montage — TAYZEN">
+              <input type="hidden" name="_autoresponse" value="Bien reçu ! Ta demande de montage est arrivée chez TAYZEN. Je te réponds sous 24-48h avec le prix exact et ton délai. Pense à vérifier tes spams. À très vite !">
 
-              <div class="hint" style="text-align:center;">
-                🔒 Paiement sécurisé via facture PayPal (carte bancaire acceptée, sans compte) • Rien à payer maintenant — le devis exact est confirmé par email d'abord.
+              <div class="recapPanel" id="recapPanel">
+                <h3>📋 Récapitulatif de ta demande</h3>
+                <ul class="recapList" id="recapList"></ul>
+                <div class="hint">Tout est bon ? Confirme — gratuit et sans engagement.</div>
               </div>
 
-              <button class="primary" type="submit">Envoyer ma demande gratuite</button>
+              <div class="hint" style="text-align:center;">
+                🔒 Rien à payer maintenant • Devis exact par email • CB acceptée, sans compte PayPal
+              </div>
+
+              <button class="primary" type="submit" id="orderSubmit">Voir le récapitulatif →</button>
             </form>
 
             <div id="orderSuccess" style="display:none; margin-top:14px;">
               <div class="card glass successPanel" style="margin:0;">
                 <div class="confettiLayer" aria-hidden="true"></div>
+                <div class="planeFly" aria-hidden="true">✈️</div>
                 <div class="checkWrap">
                   <svg class="checkmark" viewBox="0 0 52 52" aria-hidden="true">
                     <defs>
@@ -1747,8 +2163,8 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
                 </div>
                 <h3 class="successTitle">Demande envoyée !</h3>
                 <p>
-                  Merci ! Je te réponds par email pour valider le projet, te donner le prix exact et ton délai.
-                  <strong style="color:var(--text);">Pense à vérifier tes spams.</strong>
+                  Je te réponds par email avec le prix exact et ton délai.
+                  <strong style="color:var(--text);">Vérifie tes spams !</strong>
                 </p>
                 <div class="btnRow">
                   <button class="btn primary" id="successClose" type="button">Parfait !</button>
@@ -1883,6 +2299,101 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     });
   });
 
+  // ---------- Sons d'interface (WebAudio, léger et coupable) ----------
+  const soundToggleBtn = document.getElementById("soundToggle");
+  let soundOn = true;
+  try { soundOn = localStorage.getItem("tayzen_sound") !== "off"; } catch (e) {}
+  let audioCtx = null;
+
+  function refreshSoundBtn() {
+    if (!soundToggleBtn) return;
+    soundToggleBtn.textContent = soundOn ? "🔊" : "🔇";
+    soundToggleBtn.classList.toggle("off", !soundOn);
+  }
+  refreshSoundBtn();
+
+  function getCtx() {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      audioCtx = new AC();
+    }
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  }
+
+  // Pop satisfaisant : la fréquence glisse vers le haut + légère variation aléatoire
+  function pop(fStart, fEnd, dur, vol, delay, type) {
+    const ctx = getCtx();
+    if (!ctx) return;
+    const jitter = 1 + (Math.random() * 0.06 - 0.03); // ±3% → organique
+    const t0 = ctx.currentTime + (delay || 0);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || "triangle";
+    osc.frequency.setValueAtTime(fStart * jitter, t0);
+    osc.frequency.exponentialRampToValueAtTime(fEnd * jitter, t0 + dur * 0.85);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.05);
+  }
+
+  const sfx = {
+    // Clic : même famille que le survol, juste un peu plus présent
+    click()   { if (soundOn) pop(1100, 1450, 0.05, 0.03, 0, "sine"); },
+    // Sélection : deux ticks doux ascendants
+    select()  { if (soundOn) { pop(1000, 1300, 0.05, 0.028, 0, "sine"); pop(1400, 1850, 0.06, 0.026, 0.06, "sine"); } },
+    // Survol : micro-tick discret
+    hover()   { if (soundOn) pop(1500, 1800, 0.035, 0.014, 0, "sine"); },
+    // Ouverture / fermeture : glissés doux
+    open()    { if (soundOn) pop(700, 1300, 0.14, 0.025, 0, "sine"); },
+    close()   { if (soundOn) pop(1200, 700, 0.12, 0.022, 0, "sine"); },
+    // Succès : fanfare ascendante + étincelle
+    success() {
+      if (!soundOn) return;
+      pop(523, 545, 0.16, 0.06, 0,    "sine");
+      pop(659, 685, 0.16, 0.06, 0.11, "sine");
+      pop(784, 815, 0.22, 0.065, 0.22, "sine");
+      pop(1047, 1090, 0.34, 0.055, 0.33, "sine");
+      pop(1568, 2350, 0.28, 0.025, 0.42, "sine");
+      pop(2093, 3100, 0.3,  0.018, 0.5,  "sine");
+    }
+  };
+
+  if (soundToggleBtn) {
+    soundToggleBtn.addEventListener("click", () => {
+      soundOn = !soundOn;
+      try { localStorage.setItem("tayzen_sound", soundOn ? "on" : "off"); } catch (e) {}
+      refreshSoundBtn();
+      if (soundOn) sfx.select();
+    });
+  }
+
+  // Clic pop sur les éléments interactifs
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("nav a, .btn, .headerCta, .tarifChoose, .csBtn, .csOpt, .copyBtn, .infoAcc summary");
+    if (el) sfx.click();
+    const q = e.target.closest(".quizOpt, .optCheck");
+    if (q) sfx.select();
+  });
+
+  // Micro-tick au survol (souris uniquement, jamais deux fois de suite sur le même élément)
+  if (!isTouch) {
+    let lastHovered = null;
+    document.addEventListener("pointerover", (e) => {
+      const el = e.target.closest(".btn, .headerCta, .tarifChoose, .quizOpt, nav a, .csOpt, .optCheck");
+      if (el && el !== lastHovered) {
+        lastHovered = el;
+        sfx.hover();
+      } else if (!el) {
+        lastHovered = null;
+      }
+    });
+  }
+
   // ---------- Modal ----------
   const openBtn = document.getElementById("openOrder");
   const openBtn2 = document.getElementById("openOrder2");
@@ -1897,6 +2408,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
     if (lenis) lenis.stop();
+    sfx.open();
     requestAnimationFrame(() => {
       const first = modal.querySelector("input, textarea, select, button");
       if (first) first.focus();
@@ -1908,6 +2420,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     document.body.style.overflow = "";
     if (lenis) lenis.start();
     if (lastOpener) lastOpener.focus();
+    sfx.close();
     // Si l'écran de succès était affiché, on remet le formulaire pour la prochaine fois
     if (typeof resetSuccess === "function") resetSuccess();
   }
@@ -1978,37 +2491,96 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     setTimeout(() => estimateValueEl.classList.remove("bump"), 350);
   }
 
+  // Options à cocher (sous-titres, retrait du crédit, première commande)
+  const optSubs = document.getElementById("optSubs");
+  const optNoCredit = document.getElementById("optNoCredit");
+  const optFirst = document.getElementById("optFirst");
+  const sousTitresField = document.getElementById("sousTitresField");
+  const retraitCreditField = document.getElementById("retraitCreditField");
+  const premiereCommandeField = document.getElementById("premiereCommandeField");
+
+  function checkedCosts() {
+    let total = 0;
+    if (optSubs && optSubs.checked) total += 2.99;
+    if (optNoCredit && optNoCredit.checked) total += 0.99;
+    return total;
+  }
+
+  function syncCheckFields() {
+    if (sousTitresField) sousTitresField.value = (optSubs && optSubs.checked) ? "Oui (+2,99 €)" : "Non";
+    if (retraitCreditField) retraitCreditField.value = (optNoCredit && optNoCredit.checked)
+      ? "Oui (+0,99 €) — pas de crédit en description"
+      : "Non — crédit « Montage : TAYZEN » en description";
+    if (premiereCommandeField) premiereCommandeField.value = (optFirst && optFirst.checked)
+      ? "Oui (-25 % sur le montage)"
+      : "Non";
+  }
+
+  // Format prix : 42 → "42", 42.99 → "42,99"
+  function fmtPrice(n) {
+    const r = Math.round(n * 100) / 100;
+    return Number.isInteger(r) ? String(r) : r.toFixed(2).replace(".", ",");
+  }
+
   function updateAll() {
     const extra = parseInt(extraRevisions.value, 10) || 0;
     const cost = getSelectedCost(extraRevisions);
-    revSummary.innerHTML = `Total révisions : <strong>${1 + extra}</strong> (1 incluse + ${extra} en option) • Option : <strong>+${cost} €</strong>`;
+    revSummary.innerHTML = extra > 0
+      ? `${1 + extra} révisions au total (1 incluse + ${extra}) • <strong>+${cost} €</strong> • 1 commentaire = 1 modif`
+      : `1 révision incluse • 1 commentaire = 1 modif`;
+
+    syncCheckFields();
 
     const extraCost = getSelectedCost(extraRevisions);
     const rushCost = getSelectedCost(rushDuration);
+    const optsCost = checkedCosts();
+    const isFirst = optFirst && optFirst.checked;
     const key = finalDuration.value;
+    const savingsEl = document.getElementById("estimateSavings");
 
     if (!key || !durationBands[key]) {
       estimateValueEl.textContent = "—";
       estimateMetaEl.textContent = "Choisis une durée pour afficher une estimation.";
+      if (savingsEl) savingsEl.textContent = "";
       tarifEstimeInput.value = "";
       return;
     }
 
     const band = durationBands[key];
-    const minTotal = band.min + extraCost + rushCost;
+    // La remise -25 % s'applique sur le montage (pas sur les options ni le supplément rushs)
+    const rate = isFirst ? 0.75 : 1;
+    const minTotal = band.min * rate + extraCost + rushCost + optsCost;
+    const minFull  = band.min + extraCost + rushCost + optsCost;
 
     if (band.max === null) {
-      estimateValueEl.textContent = `${minTotal} €+`;
+      if (isFirst) {
+        estimateValueEl.innerHTML = `<span class="estOld">${fmtPrice(minFull)} €+</span>${fmtPrice(minTotal)} €+<span class="estPromo">-25 %</span>`;
+        if (savingsEl) savingsEl.textContent = `🎉 Tu économises ${fmtPrice(band.min * 0.25)} € minimum sur cette commande`;
+      } else {
+        estimateValueEl.textContent = `${fmtPrice(minTotal)} €+`;
+        if (savingsEl) savingsEl.textContent = "";
+      }
       estimateMetaEl.textContent = `${band.label} • options + rushs inclus • estimation (indicatif)`;
-      tarifEstimeInput.value = `${minTotal} €+`;
+      tarifEstimeInput.value = `${fmtPrice(minTotal)} €+` + (isFirst ? " (1ère commande -25 %)" : "");
     } else {
-      const maxTotal = band.max + extraCost + rushCost;
-      estimateValueEl.textContent = `${minTotal}–${maxTotal} €`;
+      const maxTotal = band.max * rate + extraCost + rushCost + optsCost;
+      const maxFull  = band.max + extraCost + rushCost + optsCost;
+      if (isFirst) {
+        estimateValueEl.innerHTML = `<span class="estOld">${fmtPrice(minFull)}–${fmtPrice(maxFull)} €</span>${fmtPrice(minTotal)}–${fmtPrice(maxTotal)} €<span class="estPromo">-25 %</span>`;
+        if (savingsEl) savingsEl.textContent = `🎉 Tu économises ${fmtPrice(band.min * 0.25)}–${fmtPrice(band.max * 0.25)} € sur cette commande`;
+      } else {
+        estimateValueEl.textContent = `${fmtPrice(minTotal)}–${fmtPrice(maxTotal)} €`;
+        if (savingsEl) savingsEl.textContent = "";
+      }
       estimateMetaEl.textContent = `${band.label} • options + rushs inclus • estimation (indicatif)`;
-      tarifEstimeInput.value = `${minTotal}–${maxTotal} €`;
+      tarifEstimeInput.value = `${fmtPrice(minTotal)}–${fmtPrice(maxTotal)} €` + (isFirst ? " (1ère commande -25 %)" : "");
     }
     bumpEstimate();
   }
+
+  if (optSubs) optSubs.addEventListener("change", updateAll);
+  if (optNoCredit) optNoCredit.addEventListener("change", updateAll);
+  if (optFirst) optFirst.addEventListener("change", updateAll);
 
   extraRevisions.addEventListener("change", updateAll);
   finalDuration.addEventListener("change", updateAll);
@@ -2100,9 +2672,9 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   const orderForm = document.getElementById("orderForm");
   const orderSuccess = document.getElementById("orderSuccess");
 
-  // Pluie de confettis (respecte prefers-reduced-motion)
+  // Pluie de confettis
   function launchConfetti(layer) {
-    if (prefersReducedMotion || !layer) return;
+    if (!layer) return;
     const colors = ["#ff1e3c", "#ff5c7a", "#7CFFB2", "#39e07f", "#5b2bd6", "#ffd166", "#7cc4ff"];
     for (let i = 0; i < 42; i++) {
       const bit = document.createElement("span");
@@ -2129,27 +2701,121 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
   function showSuccess() {
     orderForm.style.display = "none";
     orderSuccess.style.display = "block";
-    // Relance les animations de la coche à chaque envoi
+    // Relance les animations de la coche et de l'avion à chaque envoi
     const checkWrap = orderSuccess.querySelector(".checkWrap");
     if (checkWrap) checkWrap.innerHTML = checkWrap.innerHTML;
+    const plane = orderSuccess.querySelector(".planeFly");
+    if (plane) { const p2 = plane.cloneNode(true); plane.replaceWith(p2); }
     launchConfetti(orderSuccess.querySelector(".confettiLayer"));
+    sfx.success();
     modal.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
   }
 
   function resetSuccess() {
     if (orderSuccess.style.display === "block") {
       orderSuccess.style.display = "none";
-      orderForm.style.display = "";
+      hideRecap();
+      resetQuiz();
+      updateProgress();
     }
   }
 
   const successCloseBtn = document.getElementById("successClose");
   if (successCloseBtn) successCloseBtn.addEventListener("click", closeModal);
 
+  // ---------- Récap avant envoi (2 temps : vérifier puis confirmer) ----------
+  const recapPanel = document.getElementById("recapPanel");
+  const recapList = document.getElementById("recapList");
+  const orderSubmitBtn = document.getElementById("orderSubmit");
+  const SUBMIT_LABEL_1 = "Voir le récapitulatif →";
+  const SUBMIT_LABEL_2 = "✓ Confirmer et envoyer ma demande gratuite";
+  let recapShown = false;
+
+  function fieldVal(id) {
+    const el = document.getElementById(id);
+    return el && el.value ? el.value.trim() : "";
+  }
+  function selectedText(sel) {
+    const o = sel.options[sel.selectedIndex];
+    return o && sel.value ? o.textContent : "—";
+  }
+
+  function buildRecap() {
+    if (!recapList) return;
+    recapList.innerHTML = "";
+    const rows = [
+      ["Pseudo", fieldVal("pseudo") || "—"],
+      ["Email", fieldVal("email") || "—"],
+      ["Facture (PayPal / CB)", fieldVal("paypal") || "—"],
+      ["Type de vidéo", fieldVal("videoType") || "—"],
+      ["Durée finale", selectedText(finalDuration)],
+      ["Rushs", selectedText(rushDuration)],
+      ["Révisions en option", selectedText(extraRevisions)],
+      ["Sous-titres incrustés", (optSubs && optSubs.checked) ? "Oui (+2,99 €)" : "Non"],
+      ["Crédit en description", (optNoCredit && optNoCredit.checked) ? "Retiré (+0,99 €)" : "Oui (« Montage : TAYZEN »)"],
+      ["Première commande", (optFirst && optFirst.checked) ? "Oui 🎉 (-25 % sur le montage)" : "Non"],
+      ["Estimation", tarifEstimeInput.value || "—"]
+    ];
+    rows.forEach(([label, value]) => {
+      const li = document.createElement("li");
+      li.appendChild(document.createTextNode(label));
+      const b = document.createElement("b");
+      b.textContent = value;
+      li.appendChild(b);
+      recapList.appendChild(li);
+    });
+  }
+
+  function hideRecap() {
+    recapShown = false;
+    if (recapPanel) recapPanel.classList.remove("on");
+    if (orderSubmitBtn) orderSubmitBtn.textContent = SUBMIT_LABEL_1;
+  }
+
+  // Validation custom : gère les selects remplacés par les menus custom
+  function markSelectError(sel) {
+    const wrap = sel.closest(".customSelect");
+    const btn = wrap ? wrap.querySelector(".csBtn") : null;
+    if (btn) {
+      btn.classList.add("err");
+      btn.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" });
+      btn.focus();
+      sel.addEventListener("change", () => btn.classList.remove("err"), { once: true });
+    }
+  }
+
+  function validateOrderForm() {
+    // Champs texte requis (visibles)
+    const fields = [...orderForm.querySelectorAll("input[required], textarea[required]")];
+    for (const f of fields) {
+      if (!f.checkValidity()) {
+        f.reportValidity();
+        f.focus();
+        return false;
+      }
+    }
+    // Selects pilotés par les menus custom
+    if (!finalDuration.value) { markSelectError(finalDuration); return false; }
+    if (!rushDuration.value)  { markSelectError(rushDuration);  return false; }
+    return true;
+  }
+
   orderForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const btn = orderForm.querySelector('button[type="submit"]');
-    const originalText = btn.textContent;
+
+    // Étape 1 : on montre le récap au lieu d'envoyer directement
+    if (!recapShown) {
+      if (!validateOrderForm()) return;
+      buildRecap();
+      recapPanel.classList.add("on");
+      recapShown = true;
+      orderSubmitBtn.textContent = SUBMIT_LABEL_2;
+      recapPanel.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" });
+      return;
+    }
+
+    // Étape 2 : envoi réel
+    const btn = orderSubmitBtn;
     btn.textContent = "Envoi…";
     btn.disabled = true;
 
@@ -2166,6 +2832,7 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
         updateAll();
         // Resynchronise l'affichage des selects custom après le reset
         orderForm.querySelectorAll("select").forEach((s) => s.dispatchEvent(new Event("change")));
+        hideRecap();
         showSuccess();
       } else {
         alert("Erreur lors de l’envoi. Réessaie ou contacte-moi par email.");
@@ -2173,10 +2840,152 @@ footer{ padding:36px 0 44px; text-align:center; font-size:13px; color: rgba(238,
     } catch (error) {
       alert("Erreur réseau. Réessaie plus tard.");
     } finally {
-      btn.textContent = originalText;
       btn.disabled = false;
+      if (!recapShown) btn.textContent = SUBMIT_LABEL_1;
     }
   });
+
+  // Si on modifie un champ après avoir vu le récap, il se met à jour en direct
+  orderForm.addEventListener("input", () => { if (recapShown) buildRecap(); });
+  orderForm.addEventListener("change", () => { if (recapShown) buildRecap(); });
+
+  // ---------- Mini quiz (3 questions avant le formulaire) ----------
+  const quiz = document.getElementById("orderQuiz");
+  const quizSteps = quiz ? [...quiz.querySelectorAll(".quizStep")] : [];
+  const quizDots = quiz ? [...quiz.querySelectorAll(".quizDots i")] : [];
+  const videoTypeInput = document.getElementById("videoType");
+
+  function showQuizStep(n) {
+    quizSteps.forEach((s, i) => { s.style.display = (i === n) ? "" : "none"; });
+    quizDots.forEach((d, i) => d.classList.toggle("on", i <= n));
+  }
+
+  function finishQuiz() {
+    if (quiz) quiz.style.display = "none";
+    orderForm.style.display = "";
+    updateProgress();
+    // Focus sur le premier champ vide pour enchaîner directement
+    const firstEmpty = [...orderForm.querySelectorAll("input[required], textarea[required]")]
+      .find((f) => !f.value);
+    if (firstEmpty) firstEmpty.focus();
+  }
+
+  function resetQuiz() {
+    if (!quiz) { orderForm.style.display = ""; return; }
+    quiz.style.display = "";
+    orderForm.style.display = "none";
+    showQuizStep(0);
+  }
+
+  if (quiz) {
+    quiz.querySelectorAll(".quizOpt").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const stepEl = btn.closest(".quizStep");
+        const n = quizSteps.indexOf(stepEl);
+
+        if (btn.dataset.type !== undefined) {
+          videoTypeInput.value = (btn.dataset.type === "__autre") ? "" : btn.dataset.type;
+        }
+        if (btn.dataset.duration) {
+          finalDuration.value = btn.dataset.duration;
+          finalDuration.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+        if (btn.dataset.rush) {
+          rushDuration.value = btn.dataset.rush;
+          rushDuration.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        if (n < quizSteps.length - 1) showQuizStep(n + 1);
+        else finishQuiz();
+      });
+    });
+    const quizSkipBtn = document.getElementById("quizSkip");
+    if (quizSkipBtn) quizSkipBtn.addEventListener("click", finishQuiz);
+    resetQuiz();
+  }
+
+  // ---------- Barre de progression du formulaire ----------
+  const fpFill = document.getElementById("fpFill");
+  const fpCount = document.getElementById("fpCount");
+
+  function updateProgress() {
+    if (!fpFill) return;
+    const tracked = [
+      document.getElementById("pseudo"),
+      document.getElementById("email"),
+      document.getElementById("paypal"),
+      videoTypeInput,
+      finalDuration,
+      rushDuration,
+      document.getElementById("rushLink"),
+      document.getElementById("message")
+    ].filter(Boolean);
+    const done = tracked.filter((f) => f.value && f.value.trim() !== "").length;
+    const pct = Math.round((done / tracked.length) * 100);
+    fpFill.style.width = pct + "%";
+    fpCount.textContent = pct + "%";
+  }
+
+  orderForm.addEventListener("input", updateProgress);
+  orderForm.addEventListener("change", updateProgress);
+  updateProgress();
+
+  // ---------- Compteurs animés (section Chiffres) ----------
+  const statNums = document.querySelectorAll(".statNum");
+  if (statNums.length) {
+    const statIO = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        statIO.unobserve(el);
+        const target = parseInt(el.dataset.count, 10) || 0;
+        const suffix = el.dataset.suffix || "";
+        if (prefersReducedMotion) { el.textContent = target + suffix; return; }
+        const t0 = performance.now();
+        const dur = 1300;
+        const tick = (now) => {
+          const p = Math.min((now - t0) / dur, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.4 });
+    statNums.forEach((el) => statIO.observe(el));
+  }
+
+  // ---------- Formulaire de question FAQ ----------
+  const faqForm = document.getElementById("faqForm");
+  const faqThanks = document.getElementById("faqThanks");
+  if (faqForm) {
+    faqForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const b = faqForm.querySelector('button[type="submit"]');
+      const t = b.textContent;
+      b.textContent = "Envoi…";
+      b.disabled = true;
+      try {
+        const res = await fetch(faqForm.action, {
+          method: "POST",
+          body: new FormData(faqForm),
+          headers: { "Accept": "application/json" }
+        });
+        if (res.ok) {
+          faqForm.reset();
+          faqThanks.style.display = "block";
+          setTimeout(() => { faqThanks.style.display = "none"; }, 7000);
+        } else {
+          alert("Erreur lors de l’envoi. Réessaie ou écris-moi par email.");
+        }
+      } catch (err) {
+        alert("Erreur réseau. Réessaie plus tard.");
+      } finally {
+        b.textContent = t;
+        b.disabled = false;
+      }
+    });
+  }
 
   // ---------- Révélations au scroll (avec stagger) ----------
   const io = new IntersectionObserver((entries) => {
